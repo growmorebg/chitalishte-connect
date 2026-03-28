@@ -17,19 +17,19 @@ document.addEventListener('DOMContentLoaded', () => {
       input: document.getElementById('field-name'),
       error: document.getElementById('error-name'),
       validate: (val) => val.trim().length > 0,
-      message: 'Please enter your name.',
+      message: 'Моля, въведете име.',
     },
     email: {
       input: document.getElementById('field-email'),
       error: document.getElementById('error-email'),
       validate: (val) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val.trim()),
-      message: 'Please enter a valid email address.',
+      message: 'Моля, въведете валиден имейл адрес.',
     },
     message: {
       input: document.getElementById('field-message'),
       error: document.getElementById('error-message'),
       validate: (val) => val.trim().length > 0,
-      message: 'Please enter a message.',
+      message: 'Моля, въведете съобщение.',
     },
   };
 
@@ -91,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Show loading state
     submitBtn.disabled = true;
     submitBtn.style.opacity = '0.7';
-    submitLabel.textContent = 'Sending...';
+    submitLabel.textContent = 'Изпращане...';
     if (submitIcon) submitIcon.innerHTML = '<span class="btn-spinner"></span>';
 
     // Simulate network delay
@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // Reset button
       submitBtn.disabled = false;
       submitBtn.style.opacity = '1';
-      submitLabel.textContent = 'Send Message';
+      submitLabel.textContent = 'Изпрати запитване';
       if (submitIcon) submitIcon.innerHTML = '<span class="material-symbols-outlined text-lg">send</span>';
 
       // Clear form

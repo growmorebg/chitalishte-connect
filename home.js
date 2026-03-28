@@ -7,34 +7,34 @@
 const feedData = [
   {
     id: 1,
-    title: 'Upcoming Folk Workshop',
+    title: 'Предстояща фолклорна работилница',
     category: 'event',
     icon: 'event',
-    tag: '12 Members attending',
+    tag: '12 члена ще присъстват',
     tagColor: 'primary',
     borderColor: 'border-[#0058bc]',
     iconBg: 'bg-[#0070eb]',
-    timestamp: 'Posted 2 hours ago • Sofia Center',
+    timestamp: 'Публикувано преди 2 часа • София център',
     description:
-      'Registration is now open for our Autumn Folk Dance intensive. Learn the intricacies of the "Graovsko Horo" from Master Kalin Ivanov. All skill levels welcome!',
+      'Записването за есенния интензивен курс по народни танци е отворено. Научете нюансите на „Граовско хоро“ с майстор Калин Иванов. Подходящо за всички нива!',
     image:
       'https://lh3.googleusercontent.com/aida-public/AB6AXuAzVQtxd202JzkSyNKD53pAws9pTrbFGwEc9uIa4gCx0wjU1_I3A-6h2hUR7WQdeKxcYpqGkxxnMOclX2LUhIbT8W6g6mxh7CODSMbzWA1s0usAYXqcEKWfef8NUok1bRfUkoTV5ROSwRABszm2q6EApV68zkBDgirJcSIxTK94Sn_lDxE5sPt31vGTnjCPY1kGEWOw9P6WyPvlEH1aKC20s0TLRYdexBqcucyoYb1UCjs121Xa3JZV-fDa6N1Xr9yvgjSw_4Z7iHw',
-    imageAlt: 'Interior of a bright dance studio with wooden floors',
+    imageAlt: 'Интериор на светла танцова зала с дървен под',
     likes: 5,
     liked: false,
   },
   {
     id: 2,
-    title: 'New Archive Donation',
+    title: 'Ново дарение за архива',
     category: 'archive',
     icon: 'auto_stories',
-    tag: 'Archive Update',
+    tag: 'Актуализация от архива',
     tagColor: 'secondary',
     borderColor: 'border-[#365ca7]',
     iconBg: 'bg-[#8cafff]',
-    timestamp: 'Posted yesterday • Library Archive',
+    timestamp: 'Публикувано вчера • Архив на библиотеката',
     description:
-      'We are honored to receive a collection of rare 19th-century manuscripts from the Dimitrov family. These will be digitized and available for public viewing starting next month.',
+      'С гордост приемаме колекция от редки ръкописи от XIX век от семейство Димитрови. Ще бъдат дигитализирани и достъпни за публика от следващия месец.',
     image: '',
     imageAlt: '',
     likes: 8,
@@ -42,16 +42,16 @@ const feedData = [
   },
   {
     id: 3,
-    title: 'Summer Reading Program Results',
+    title: 'Резултати от лятната читателска програма',
     category: 'library',
     icon: 'menu_book',
-    tag: 'Library News',
+    tag: 'Новини от библиотеката',
     tagColor: 'tertiary',
     borderColor: 'border-[#0058be]',
     iconBg: 'bg-[#2b71de]',
-    timestamp: 'Posted 3 days ago • Library',
+    timestamp: 'Публикувано преди 3 дни • Библиотека',
     description:
-      'Our summer reading program was a great success! Over 150 children participated, reading a total of 2,300 books. Special thanks to all the volunteer readers who made storytime magical.',
+      'Лятната ни читателска програма беше голям успех! Над 150 деца участваха и прочетоха общо 2300 книги. Благодарим на всички доброволци, които направиха времето за приказки магично.',
     image: '',
     imageAlt: '',
     likes: 22,
@@ -59,19 +59,19 @@ const feedData = [
   },
   {
     id: 4,
-    title: 'Theater Renovation Update',
+    title: 'Актуализация за ремонта на театъра',
     category: 'news',
     icon: 'construction',
-    tag: 'Renovation',
+    tag: 'Ремонт',
     tagColor: 'secondary',
     borderColor: 'border-[#365ca7]',
     iconBg: 'bg-[#8cafff]',
-    timestamp: 'Posted last week • Administration',
+    timestamp: 'Публикувано миналата седмица • Администрация',
     description:
-      'Phase 2 of our historic theater renovation is 70% complete. The new seating has been installed and acoustic panels are being fitted. We expect to reopen the main hall by December.',
+      'Втора фаза от ремонта на историческия ни театър е завършена на 70%. Новите места са монтирани, монтират се акустични панели. Очакваме повторно отваряне на голямата зала до декември.',
     image:
       'https://lh3.googleusercontent.com/aida-public/AB6AXuBfh4zSeSvypkZJedrl_eHaCSn_SN4L8wAXz8FxnwOXGFy7_cK7Smzuwn01S6i3h68DCs5eaJUIY2GySYX-usZ_kCqabqR8ZSM9SWmZ8M1b0wk4GaIr1AqxLVKauyTgfv35wvf8nZSrjEOZxAB9pMFlWjkwdYw83tWLgNJ1Drzhxo7KQXg-tFlmSKmkUBOsRLAxOXs11u3Y4IFZOXSS5TCHvsTaTxbR356czZVrgbKVi4-HyA4wKkViH758yFI_qBFuPClCVvugyUU',
-    imageAlt: 'Traditional Bulgarian folk scene',
+    imageAlt: 'Традиционна българска фолклорна сцена',
     likes: 15,
     liked: false,
   },
@@ -118,12 +118,12 @@ function renderFeed() {
             id="like-btn-${item.id}"
           >
             <span class="material-symbols-outlined text-lg">thumb_up</span>
-            <span class="like-label">${item.liked ? 'Liked' : 'Interested'}</span>
+            <span class="like-label">${item.liked ? 'Харесано' : 'Интересува ме'}</span>
             <span class="like-count text-xs opacity-70">(${item.likes})</span>
           </button>
           <button class="like-btn">
             <span class="material-symbols-outlined text-lg">share</span>
-            Share
+            Сподели
           </button>
         </div>
         <span class="text-xs font-bold text-${item.tagColor} px-3 py-1 bg-${item.tagColor}/10 rounded-full hidden sm:inline">${item.tag}</span>
@@ -147,8 +147,8 @@ function toggleLike(id) {
   if (btn) {
     btn.classList.toggle('liked', item.liked);
     btn.querySelector('.like-label').textContent = item.liked
-      ? 'Liked'
-      : 'Interested';
+      ? 'Харесано'
+      : 'Интересува ме';
     btn.querySelector('.like-count').textContent = `(${item.likes})`;
   }
 }

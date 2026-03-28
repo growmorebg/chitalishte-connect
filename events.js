@@ -4,16 +4,16 @@
  */
 
 // ─── Seed Event Data ────────────────────────────────────────────────
-const STORAGE_KEY = 'chitalishte_events';
+const STORAGE_KEY = 'chitalishte_events_bg';
 
 const seedEvents = [
   {
     id: 'seed-1',
-    title: 'Horo - Intermediate Folk Dance',
+    title: 'Хоро — народни танци за напреднали',
     date: '2026-03-22',
     time: '18:00',
-    description: 'Master the complex rhythms of the Rodopi region with Maestro Georgiev. Open for all registered members.',
-    category: 'Dance Workshop',
+    description: 'Овладейте сложните ритми на Родопите с маестро Георгиев. Отворено за всички регистрирани членове.',
+    category: 'Танцова работилница',
     categoryColor: 'primary-fixed',
     categoryTextColor: 'on-primary-fixed',
     image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBzqLJr3877Rx2hGGBT4VxyxWiAuhARMDeq04ht2bx9hkniLWh7SZrovGNqpxMjfgGC2kVI_xreqj7X4Kno642R23rUOJEefeCvHVV6LZYPnrPxnmiVzOt1vkVnqEB0ELXeNwXsTy-RfK6rSNFdPglJKUnIFjdT1OTPc2GDdaKg83QAb-2-QZMg7L0KWSqwWvojRoFxXuAWGru1M3ibw-UPtFEbGqpGOV7QbrRmVch2N2lTH-kGkqbjQQZamVuoxtreIvkfUwBCDYQ',
@@ -21,11 +21,11 @@ const seedEvents = [
   },
   {
     id: 'seed-2',
-    title: 'Preserving the Unwritten Archive',
+    title: 'Запазване на неписания архив',
     date: '2026-03-25',
     time: '16:30',
-    description: 'Join our chief librarian for a deep dive into the 19th-century manuscripts preserved in our community archives.',
-    category: 'Heritage Talk',
+    description: 'Присъединете се към главния ни библиотекар за задълбочен поглед към ръкописите от XIX век в общностния ни архив.',
+    category: 'Беседа за наследството',
     categoryColor: 'tertiary-fixed',
     categoryTextColor: 'on-tertiary-fixed',
     image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCT3Am-DvUQWDByHIxgmU1QdF4pXkhnht6AZJrbe105g_mgFP_pM7TCVt03HgwLRzFUNlEhAjsiQikV9rcz1Hrph1oH8Sv3oRtYzPb5LUYsP3kRceR3XkGqy_Zgh_WNPY3oTFw-asFNQ4bWox3bxGLBW1qaIg7jMNg9Jr2m37bCc4ljL8V2dKuSpP2ixQKM55vUZKkpTDhpH06PxMRvlz0BGzXBQBBhwzmtzu_9uby6LOqUx8mkHch8hN4xLcHfbiiRZZZNIwgH3Vg',
@@ -33,11 +33,11 @@ const seedEvents = [
   },
   {
     id: 'seed-3',
-    title: 'Autumn Equinox Concert',
+    title: 'Концерт за есенното равноденствие',
     date: '2026-03-28',
     time: '19:00',
-    description: 'A special performance by the regional choir and folk orchestra. Free admission for the entire neighborhood.',
-    category: 'Community Gathering',
+    description: 'Специално изпълнение на регионалния хор и фолк оркестър. Свободен вход за целия квартал.',
+    category: 'Общностна среща',
     categoryColor: 'secondary-fixed',
     categoryTextColor: 'on-secondary-fixed',
     image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBtOsuFEJksvmj8tAywNFdsMcx5suXuRuQvOJs5rNFSiPBfkld3S_QkDbEJTEfJIT_9A2q5l3c9HElAi73gbC32WY6LTOPSP5gxvUBsFP_hRvzb5tzGZoiP32kxSvzqAtO103G6EuBPXGqCfHr-BERu_i1VE_lNCVtGDBsFqnAo2XtT9aF3XjDWzyiwUOK5aXScZvxOAzah-MZRhbkwPU_XGJjEZRbh0jRSIx1HbVZmxaSEkY4Jt3j8b7CoRmklgO1SAQLWQeWQ2xo',
@@ -45,11 +45,11 @@ const seedEvents = [
   },
   {
     id: 'seed-4',
-    title: 'Poetry Slam: Balkan Voices',
+    title: 'Поетичен слем: Балкански гласове',
     date: '2026-04-05',
     time: '18:30',
-    description: 'An evening celebrating the rich poetic tradition of the Balkans. Open mic for aspiring poets.',
-    category: 'Literary Event',
+    description: 'Вечер в чест на богатата поетична традиция на Балканите. Отворен микрофон за начинаещи поети.',
+    category: 'Литературно събитие',
     categoryColor: 'primary-fixed',
     categoryTextColor: 'on-primary-fixed',
     image: '',
@@ -57,11 +57,11 @@ const seedEvents = [
   },
   {
     id: 'seed-5',
-    title: 'Kids Folk Art Class',
+    title: 'Детска фолклорна работилница',
     date: '2026-04-12',
     time: '16:00',
-    description: 'Creative workshop for children ages 6–12 to learn traditional Bulgarian art techniques: embroidery, woodcarving, and pottery.',
-    category: 'Workshop',
+    description: 'Творческа работилница за деца на 6–12 години: традиционни български техники — бродерия, дърворезба и грънчарство.',
+    category: 'Работилница',
     categoryColor: 'secondary-fixed',
     categoryTextColor: 'on-secondary-fixed',
     image: '',
@@ -91,10 +91,13 @@ let selectedDate = null; // 'YYYY-MM-DD' or null (show all)
 
 // ─── Calendar Rendering ─────────────────────────────────────────────
 const MONTH_NAMES = [
-  'January', 'February', 'March', 'April', 'May', 'June',
-  'July', 'August', 'September', 'October', 'November', 'December',
+  'Януари', 'Февруари', 'Март', 'Април', 'Май', 'Юни',
+  'Юли', 'Август', 'Септември', 'Октомври', 'Ноември', 'Декември',
 ];
-const DAY_LABELS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+const SHORT_MONTH_NAMES = [
+  'яну', 'фев', 'мар', 'апр', 'май', 'юни',
+  'юли', 'авг', 'сеп', 'окт', 'ное', 'дек',
+];
 
 function initCalendar() {
   const now = new Date();
@@ -226,12 +229,12 @@ function renderEventList() {
   if (filterInfo) {
     if (selectedDate) {
       const dateObj = new Date(selectedDate + 'T00:00:00');
-      const formatted = dateObj.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+      const formatted = dateObj.toLocaleDateString('bg-BG', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
       filterInfo.innerHTML = `
         <div class="flex items-center gap-3 mb-6 p-3 bg-primary/5 rounded-lg">
           <span class="material-symbols-outlined text-primary">filter_alt</span>
-          <span class="text-sm font-medium text-on-surface">Showing events for <strong>${formatted}</strong></span>
-          <button onclick="showAll()" class="ml-auto text-xs font-bold text-primary hover:underline">Show All</button>
+          <span class="text-sm font-medium text-on-surface">Събития за <strong>${formatted}</strong></span>
+          <button onclick="showAll()" class="ml-auto text-xs font-bold text-primary hover:underline">Всички</button>
         </div>
       `;
     } else {
@@ -243,8 +246,8 @@ function renderEventList() {
     container.innerHTML = `
       <div class="empty-state">
         <span class="material-symbols-outlined">event_busy</span>
-        <p class="font-semibold text-on-surface mb-1">No events found</p>
-        <p class="text-sm">${selectedDate ? 'No events on this date. Try another day or' : 'No upcoming events.'} <button onclick="showAll()" class="text-primary font-bold hover:underline">show all</button></p>
+        <p class="font-semibold text-on-surface mb-1">Няма намерени събития</p>
+        <p class="text-sm">${selectedDate ? 'Няма събития на тази дата. Опитайте друг ден или' : 'Няма предстоящи събития.'} <button onclick="showAll()" class="text-primary font-bold hover:underline">покажи всички</button></p>
       </div>
     `;
     return;
@@ -253,7 +256,7 @@ function renderEventList() {
   container.innerHTML = filtered
     .map((ev) => {
       const dateObj = new Date(ev.date + 'T00:00:00');
-      const monthStr = MONTH_NAMES[dateObj.getMonth()].substring(0, 3);
+      const monthStr = SHORT_MONTH_NAMES[dateObj.getMonth()];
       const dayStr = dateObj.getDate();
       const yearStr = dateObj.getFullYear();
       const catColor = ev.categoryColor || 'primary-fixed';
@@ -274,15 +277,15 @@ function renderEventList() {
             <div>
               <div class="flex items-center justify-between mb-2 flex-wrap gap-2">
                 <span class="px-3 py-1 bg-${catColor} text-${catTextColor} text-[10px] font-bold uppercase tracking-widest rounded-full">${ev.category}</span>
-                <span class="text-xs font-medium text-on-surface-variant">${monthStr} ${dayStr}, ${yearStr} • ${ev.time}</span>
+                <span class="text-xs font-medium text-on-surface-variant">${dayStr} ${monthStr} ${yearStr} г. • ${ev.time}</span>
               </div>
               <h3 class="text-xl font-bold text-on-surface mb-2">${ev.title}</h3>
               <p class="text-sm text-on-surface-variant line-clamp-2">${ev.description}</p>
             </div>
             <div class="mt-6 flex items-center justify-between">
-              <span class="text-xs font-medium text-on-surface-variant">${ev.attendees || 0} attending</span>
+              <span class="text-xs font-medium text-on-surface-variant">${ev.attendees || 0} участници</span>
               <button class="text-primary font-bold text-sm flex items-center gap-1 group/btn hover:underline">
-                Learn More
+                Научете повече
                 <span class="material-symbols-outlined text-sm group-hover/btn:translate-x-1 transition-transform">arrow_forward</span>
               </button>
             </div>
@@ -326,7 +329,7 @@ function handleCreateEvent(e) {
 
   // Simple validation
   if (!title || !date || !time) {
-    alert('Please fill in at least the Title, Date, and Time.');
+    alert('Моля, попълнете поне заглавие, дата и час.');
     return;
   }
 
@@ -335,8 +338,8 @@ function handleCreateEvent(e) {
     title,
     date,
     time,
-    description: desc || 'No description provided.',
-    category: 'Community Event',
+    description: desc || 'Няма описание.',
+    category: 'Общностно събитие',
     categoryColor: 'secondary-fixed',
     categoryTextColor: 'on-secondary-fixed',
     image: '',
@@ -355,7 +358,7 @@ function handleCreateEvent(e) {
   renderEventList();
 
   // Show success toast
-  showToast('Event created successfully!');
+  showToast('Събитието е създадено успешно!');
 }
 
 function showToast(message) {
