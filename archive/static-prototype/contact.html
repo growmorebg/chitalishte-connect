@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html class="light" lang="bg">
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>Контакт — Chitalishte Connect</title>
+  <meta name="description" content="Свържете се с българското читалище в София. Пишете ни за събития, членство в библиотеката или творчески курсове." />
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind Config -->
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#0058bc",
+            "primary-container": "#0070eb",
+            "on-primary": "#ffffff",
+            "on-primary-container": "#fefcff",
+            "on-primary-fixed": "#001a41",
+            "on-primary-fixed-variant": "#004493",
+            "primary-fixed": "#d8e2ff",
+            "primary-fixed-dim": "#adc6ff",
+            "secondary": "#365ca7",
+            "secondary-container": "#8cafff",
+            "on-secondary": "#ffffff",
+            "on-secondary-container": "#13408a",
+            "on-secondary-fixed": "#001943",
+            "on-secondary-fixed-variant": "#18448d",
+            "secondary-fixed": "#d9e2ff",
+            "secondary-fixed-dim": "#afc6ff",
+            "tertiary": "#0058be",
+            "tertiary-container": "#2b71de",
+            "on-tertiary": "#ffffff",
+            "on-tertiary-container": "#fefcff",
+            "on-tertiary-fixed": "#001a42",
+            "on-tertiary-fixed-variant": "#004395",
+            "tertiary-fixed": "#d8e2ff",
+            "tertiary-fixed-dim": "#aec6ff",
+            "error": "#ba1a1a",
+            "error-container": "#ffdad6",
+            "on-error": "#ffffff",
+            "on-error-container": "#93000a",
+            "surface": "#f7f9fc",
+            "surface-dim": "#d8dadd",
+            "surface-bright": "#f7f9fc",
+            "surface-variant": "#e0e3e6",
+            "surface-tint": "#005bc0",
+            "surface-container": "#eceef1",
+            "surface-container-low": "#f2f4f7",
+            "surface-container-lowest": "#ffffff",
+            "surface-container-high": "#e6e8eb",
+            "surface-container-highest": "#e0e3e6",
+            "on-surface": "#191c1e",
+            "on-surface-variant": "#414754",
+            "on-background": "#191c1e",
+            "background": "#f7f9fc",
+            "outline": "#727785",
+            "outline-variant": "#c1c6d6",
+            "inverse-surface": "#2d3133",
+            "inverse-on-surface": "#eff1f4",
+            "inverse-primary": "#adc6ff",
+          },
+          fontFamily: { headline: ["Inter"], body: ["Inter"], label: ["Inter"] },
+          borderRadius: { DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem", full: "9999px" },
+        },
+      },
+    };
+  </script>
+
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="bg-surface text-on-surface min-h-screen flex flex-col selection:bg-primary-container selection:text-on-primary-container">
+
+  <!-- ═══════════════════ TOP NAVIGATION ═══════════════════ -->
+  <header class="fixed top-0 w-full z-50 bg-white/85 backdrop-blur-md shadow-sm">
+    <div class="flex justify-between items-center px-6 h-16 max-w-screen-2xl mx-auto">
+      <div class="text-2xl font-black text-[#1877F2] tracking-tighter">
+        <a href="index.html">Chitalishte Connect</a>
+      </div>
+      <!-- Desktop Nav -->
+      <nav class="hidden lg:flex items-center gap-2">
+        <a data-nav="home" class="text-slate-600 px-4 py-3 font-sans text-sm font-medium tracking-tight hover:bg-slate-100 rounded-lg transition-colors" href="index.html">Начало</a>
+        <a data-nav="events" class="text-slate-600 px-4 py-3 font-sans text-sm font-medium tracking-tight hover:bg-slate-100 rounded-lg transition-colors" href="events.html">Събития</a>
+        <a data-nav="gallery" class="text-slate-600 px-4 py-3 font-sans text-sm font-medium tracking-tight hover:bg-slate-100 rounded-lg transition-colors" href="gallery.html">Галерия</a>
+        <a data-nav="contact" class="text-slate-600 px-4 py-3 font-sans text-sm font-medium tracking-tight hover:bg-slate-100 rounded-lg transition-colors" href="contact.html">Контакт</a>
+      </nav>
+      <div class="flex items-center gap-3">
+        <button class="material-symbols-outlined text-slate-600 p-2 hover:bg-slate-100 rounded-lg transition-colors">notifications</button>
+        <button class="material-symbols-outlined text-slate-600 p-2 hover:bg-slate-100 rounded-lg transition-colors hidden sm:block">chat</button>
+        <button class="material-symbols-outlined text-slate-600 p-2 hover:bg-slate-100 rounded-lg transition-colors hidden sm:block">account_circle</button>
+        <button class="hamburger-btn" id="hamburger-btn" aria-label="Отваряне и затваряне на менюто">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" id="mobile-menu">
+    <a data-mobile-nav="home" href="index.html"><span class="material-symbols-outlined">home</span> Начало</a>
+    <a data-mobile-nav="events" href="events.html"><span class="material-symbols-outlined">event</span> Събития</a>
+    <a data-mobile-nav="gallery" href="gallery.html"><span class="material-symbols-outlined">photo_library</span> Галерия</a>
+    <a data-mobile-nav="contact" href="contact.html"><span class="material-symbols-outlined">mail</span> Контакт</a>
+  </div>
+
+  <!-- ═══════════════════ MAIN CONTENT ═══════════════════ -->
+  <main class="flex-grow pt-24 pb-12 px-4 sm:px-6">
+    <div class="max-w-5xl mx-auto">
+
+      <!-- Title + map + contact lines (vitoshafolk-style) -->
+      <section class="mb-10 sm:mb-12">
+        <p class="text-sm font-semibold text-primary uppercase tracking-widest mb-3">Контакти</p>
+        <h1 class="contacts-title">НЧ „Св. св. Кирил и Методий – 1926“</h1>
+
+        <div class="mt-6 rounded-lg overflow-hidden border border-outline-variant/25 shadow-sm bg-white">
+          <iframe
+            class="contact-map-frame"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2931.577996484126!2d23.411278100000004!3d42.7126556!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x40aa8f006e17131d%3A0x160a099a2a6f2f1d!2z0J3QpyIg0KHQsi4g0KHQsi4g0JrQuNGA0LjQuyDQuCDQnNC10YLQvtC00LjQuS0gMTkyNiI!5e0!3m2!1sbg!2sbg!4v1774708726494!5m2!1sbg!2sbg"
+            allowfullscreen=""
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            title="Местоположение на картата"
+          ></iframe>
+        </div>
+
+        <div class="contact-meta-block mt-6 space-y-4">
+          <p>
+            <span class="font-bold text-on-surface">Адрес:</span>
+            гр. София, кв. Враждебна, ул. „8-ма“ 47, 1839 Враждебна
+          </p>
+          <p>
+            <span class="font-bold text-on-surface">Телефон:</span>
+            02 955 41 24
+            <br />
+            <span class="text-on-surface-variant">Библиотека: 0879970464</span>
+          </p>
+          <p>
+            <span class="font-bold text-on-surface">Имейл:</span>
+            <a href="mailto:vitoshafolk@abv.bg">vitoshafolk@abv.bg</a>
+          </p>
+        </div>
+      </section>
+
+      <!-- Working hours + inquiry form -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+        <div class="contact-hours-wrap order-2 lg:order-1">
+          <div class="contact-hours-title">Работно време</div>
+          <table class="contact-hours-table">
+            <tbody>
+              <tr><th scope="row">Понеделник</th><td>08:30 – 21:00</td></tr>
+              <tr><th scope="row">Вторник</th><td>08:30 – 21:00</td></tr>
+              <tr><th scope="row">Сряда</th><td>08:30 – 21:00</td></tr>
+              <tr><th scope="row">Четвъртък</th><td>08:30 – 21:00</td></tr>
+              <tr><th scope="row">Петък</th><td>08:30 – 21:00</td></tr>
+              <tr><th scope="row">Събота</th><td>08:30 – 21:00</td></tr>
+              <tr><th scope="row">Неделя</th><td>08:30 – 21:00</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="contact-form-panel order-1 lg:order-2">
+          <h3>Изпрати запитване</h3>
+          <div class="contact-form-inner">
+            <form id="contact-form" class="space-y-5" novalidate>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="form-field flex flex-col gap-1.5">
+                  <label class="text-sm font-semibold text-on-surface-variant" for="field-name">Пълно име</label>
+                  <input
+                    id="field-name"
+                    class="w-full px-3 py-2.5 rounded-lg bg-surface-container-low border border-outline-variant/25 focus:ring-2 focus:ring-primary focus:border-transparent transition-all outline-none text-sm"
+                    placeholder="Иван Иванов"
+                    type="text"
+                  />
+                  <p class="form-error" id="error-name">Моля, въведете име.</p>
+                </div>
+                <div class="form-field flex flex-col gap-1.5">
+                  <label class="text-sm font-semibold text-on-surface-variant" for="field-email">Имейл</label>
+                  <input
+                    id="field-email"
+                    class="w-full px-3 py-2.5 rounded-lg bg-surface-container-low border border-outline-variant/25 focus:ring-2 focus:ring-primary focus:border-transparent transition-all outline-none text-sm"
+                    placeholder="email@example.bg"
+                    type="email"
+                  />
+                  <p class="form-error" id="error-email">Моля, въведете валиден имейл.</p>
+                </div>
+              </div>
+
+              <div class="flex flex-col gap-1.5">
+                <label class="text-sm font-semibold text-on-surface-variant" for="field-subject">Тема</label>
+                <select
+                  id="field-subject"
+                  class="w-full px-3 py-2.5 rounded-lg bg-surface-container-low border border-outline-variant/25 focus:ring-2 focus:ring-primary focus:border-transparent transition-all outline-none appearance-none text-sm"
+                >
+                  <option>Запитване за събитие</option>
+                  <option>Членство в библиотеката</option>
+                  <option>Творчески курсове</option>
+                  <option>Дарения и подкрепа</option>
+                  <option>Друго</option>
+                </select>
+              </div>
+
+              <div class="form-field flex flex-col gap-1.5">
+                <label class="text-sm font-semibold text-on-surface-variant" for="field-message">Съобщение</label>
+                <textarea
+                  id="field-message"
+                  class="w-full px-3 py-2.5 rounded-lg bg-surface-container-low border border-outline-variant/25 focus:ring-2 focus:ring-primary focus:border-transparent transition-all outline-none resize-none text-sm min-h-[120px]"
+                  placeholder="Вашето запитване…"
+                  rows="5"
+                ></textarea>
+                <p class="form-error" id="error-message">Моля, въведете съобщение.</p>
+              </div>
+
+              <button
+                id="submit-btn"
+                class="w-full py-3 bg-gradient-to-br from-primary to-primary-container text-on-primary font-bold rounded-lg shadow-md shadow-primary/15 active:scale-[0.99] transition-all flex items-center justify-center gap-2 text-sm"
+                type="submit"
+              >
+                <span id="submit-label">Изпрати запитване</span>
+                <span id="submit-icon"><span class="material-symbols-outlined text-lg">send</span></span>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ═══════════════════ FOOTER ═══════════════════ -->
+  <footer class="w-full py-10 sm:py-12 mt-auto bg-slate-50 border-t border-slate-200/20">
+    <div class="flex flex-col md:flex-row justify-between items-center px-6 sm:px-8 gap-6 max-w-7xl mx-auto">
+      <div class="flex flex-wrap justify-center gap-6 sm:gap-8">
+        <a class="text-sm text-slate-500 hover:text-[#1877F2] transition-colors underline-offset-4 hover:underline" href="#">За нас</a>
+        <a class="text-sm text-slate-500 hover:text-[#1877F2] transition-colors underline-offset-4 hover:underline" href="#">Библиотека</a>
+        <a class="text-sm text-slate-500 hover:text-[#1877F2] transition-colors underline-offset-4 hover:underline" href="#">Архив</a>
+        <a class="text-sm text-slate-500 hover:text-[#1877F2] transition-colors underline-offset-4 hover:underline" href="#">Подкрепа</a>
+      </div>
+      <div class="flex gap-4">
+        <span class="material-symbols-outlined text-slate-400 hover:text-[#1877F2] cursor-pointer transition-colors">language</span>
+        <span class="material-symbols-outlined text-slate-400 hover:text-[#1877F2] cursor-pointer transition-colors">share</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="app.js"></script>
+  <script src="contact.js"></script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ site_settings.site_name }} | Начало{% endblock %}
+
+{% block content %}
+    <section class="hero hero--image">
+        <div class="image hero-photo-shell">
+            <div class="hero-photo-frame">
+                <img
+                    class="hero-photo"
+                    src="{% static 'cms/images/homepage-hero.png' %}"
+                    alt="{{ site_settings.site_name|default:'Читалище' }} - снимка за началната страница"
+                    decoding="async"
+                    fetchpriority="high"
+                >
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="container">
+            <div class="section-heading section-heading--split">
+                <div>
+                    <h2>{{ home_page.stories_heading }}</h2>
+                </div>
+                <a class="text-link" href="{% url 'cms:projects' %}">Всички новини</a>
+            </div>
+            <div class="card-grid card-grid--compact">
+                {% for project in featured_stories %}
+                    <article class="card story-card">
+                        {% if project.cover_image %}
+                            <img class="card-media" src="{{ project.cover_image.url }}" alt="{{ project.title }}">
+                        {% endif %}
+                        <h3><a href="{{ project.get_absolute_url }}">{{ project.title }}</a></h3>
+                        <p class="card-date">{{ project.published_at|date:"d.m.Y" }}</p>
+                    </article>
+                {% empty %}
+                    <article class="card empty-state">
+                        <h3>Няма публикувани новини</h3>
+                    </article>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <section class="section section--muted">
+        <div class="container">
+            <div class="section-heading section-heading--split">
+                <div>
+                    <h2>{{ home_page.programs_heading }}</h2>
+                </div>
+                <a class="text-link" href="{% url 'cms:programs' %}">Всички школи</a>
+            </div>
+            <div class="category-grid">
+                {% for category in program_categories %}
+                    <a class="card category-card" href="{% url 'cms:programs' %}?category={{ category.slug }}#program-index">
+                        <h3>{{ category.name }}</h3>
+                        <span class="text-link">Отворете категорията</span>
+                    </a>
+                {% empty %}
+                    <article class="card empty-state">
+                        <h3>Все още няма публикувани категории</h3>
+                    </article>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    {% if upcoming_events %}
+        <section class="section section--muted">
+            <div class="container">
+                <div class="section-heading">
+                    <h2>Предстоящи сесии и срещи</h2>
+                </div>
+                <div class="event-grid">
+                    {% for event in upcoming_events %}
+                        <article class="card event-card">
+                            <p class="event-date">{{ event.date|date:"d M" }}</p>
+                            <h3>{{ event.title }}</h3>
+                            <p class="footer-muted">
+                                {{ event.time|time:"H:i" }}
+                                {% if event.end_time %} - {{ event.end_time|time:"H:i" }}{% endif %}
+                                {% if event.category %} • {{ event.category }}{% endif %}
+                            </p>
+                        </article>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+    {% endif %}
+{% endblock %}

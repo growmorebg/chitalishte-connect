@@ -1,0 +1,18 @@
+<article class="card person-card{% if person_card_class %} {{ person_card_class }}{% endif %}">
+    <div class="person-card__header">
+        {% if person_image %}
+            <img class="avatar" src="{{ person_image.url }}" alt="{{ person_name }}">
+        {% else %}
+            <div class="avatar avatar--placeholder">{{ person_name|slice:":1" }}</div>
+        {% endif %}
+        <div class="person-card__identity">
+            <h3>{{ person_name }}</h3>
+            {% if person_role %}<p class="person-role">{{ person_role }}</p>{% endif %}
+            {% if person_meta %}<p class="footer-muted person-card__meta">{{ person_meta }}</p>{% endif %}
+            {% if person_phone %}<a class="footer-muted person-card__meta" href="tel:{{ person_phone|cut:' ' }}">{{ person_phone }}</a>{% endif %}
+        </div>
+    </div>
+    {% if person_summary %}<p class="person-card__summary">{{ person_summary }}</p>{% endif %}
+    {% if person_body %}<p class="person-card__body">{{ person_body }}</p>{% endif %}
+    {% if person_email %}<a class="text-link person-card__email" href="mailto:{{ person_email }}">{{ person_email }}</a>{% endif %}
+</article>

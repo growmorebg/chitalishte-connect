@@ -1,0 +1,283 @@
+{% extends "base.html" %}
+
+{% block title %}{{ program.title }} | {{ site_settings.site_name }}{% endblock %}
+
+{% block content %}
+    <section class="program-detail-hero" aria-labelledby="program-detail-title">
+        <div class="container program-detail-hero__grid">
+            <div class="program-detail-hero__copy">
+                <a class="program-detail__category" href="{% url 'cms:programs' %}?category={{ program.category.slug }}#program-index">{{ program.category.name }}</a>
+                <div class="program-detail-hero__heading">
+                    <h1 id="program-detail-title">{{ program.title }}</h1>
+                    {% if program.summary %}
+                        <p class="program-detail-hero__summary">{{ program.summary }}</p>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="program-detail-hero__visual">
+                {% if program.cover_image %}
+                    <img class="program-detail-hero__image" src="{{ program.cover_image.url }}" alt="{{ program.title }}" loading="eager" decoding="async" fetchpriority="high">
+                {% else %}
+                    <div class="program-detail-hero__placeholder">
+                        <span>{{ program.category.name }}</span>
+                        <strong>{{ program.title }}</strong>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+
+    {% if program.audience or program.age_group or program.level or program.duration or program.location_name %}
+        <section class="program-detail-snapshot" aria-label="Основни параметри">
+            <div class="container program-detail-snapshot__grid">
+                {% if program.audience %}
+                    <div class="program-detail-snapshot__item">
+                        <span>Подходящо за</span>
+                        <strong>{{ program.audience }}</strong>
+                    </div>
+                {% endif %}
+                {% if program.age_group %}
+                    <div class="program-detail-snapshot__item">
+                        <span>Възраст</span>
+                        <strong>{{ program.age_group }}</strong>
+                    </div>
+                {% endif %}
+                {% if program.level %}
+                    <div class="program-detail-snapshot__item">
+                        <span>Ниво</span>
+                        <strong>{{ program.level }}</strong>
+                    </div>
+                {% endif %}
+                {% if program.duration %}
+                    <div class="program-detail-snapshot__item">
+                        <span>Продължителност</span>
+                        <strong>{{ program.duration }}</strong>
+                    </div>
+                {% endif %}
+                {% if program.location_name %}
+                    <div class="program-detail-snapshot__item">
+                        <span>Локация</span>
+                        <strong>{{ program.location_name }}</strong>
+                    </div>
+                {% endif %}
+            </div>
+        </section>
+    {% endif %}
+
+    <section class="section program-detail-body">
+        <div class="container program-detail-layout">
+            <article class="program-detail-main">
+                <section class="program-section" aria-labelledby="program-overview-title">
+                    <div class="program-section__header">
+                        <h2 id="program-overview-title">Какво включва школата</h2>
+                    </div>
+                    <div class="rich-text program-rich-text">{{ program.description|linebreaks }}</div>
+                </section>
+
+                {% if program_location %}
+                    <section class="program-section" aria-labelledby="program-location-title">
+                        <div class="program-section__header">
+                            <h2 id="program-location-title">Къде се провеждат заниманията</h2>
+                        </div>
+                        <article class="program-location">
+                            <div class="program-location__content">
+                                <h3>{{ program_location.location_name }}</h3>
+                                <p>{{ program_location.location_short_description|default:"Информация за пространството и достъпа до него." }}</p>
+                                <ul class="program-contact-list">
+                                    <li>
+                                        <span>Адрес</span>
+                                        <strong>{{ program_location.address_line }}, {{ program_location.city }}</strong>
+                                    </li>
+                                    {% if program_location.phone_primary %}
+                                        <li>
+                                            <span>Телефон</span>
+                                            <a href="tel:{{ program_location.phone_primary|cut:' ' }}">{{ program_location.phone_primary }}</a>
+                                        </li>
+                                    {% endif %}
+                                    {% if program_location.email %}
+                                        <li>
+                                            <span>Имейл</span>
+                                            <a href="mailto:{{ program_location.email }}">{{ program_location.email }}</a>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                                {% if program_location.location_access_notes %}
+                                    <p class="program-location__note">{{ program_location.location_access_notes }}</p>
+                                {% endif %}
+                            </div>
+                            {% if program_location.map_embed_url %}
+                                <div class="program-location__map">
+                                    <iframe
+                                        src="{{ program_location.map_embed_url }}"
+                                        title="Карта на {{ program_location.location_name }}"
+                                        loading="lazy"
+                                        referrerpolicy="no-referrer-when-downgrade"
+                                    ></iframe>
+                                </div>
+                            {% endif %}
+                        </article>
+                    </section>
+                {% endif %}
+
+                {% if program_notes %}
+                    <section class="program-section" aria-labelledby="program-notes-title">
+                        <div class="program-section__header">
+                            <h2 id="program-notes-title">Практически уточнения</h2>
+                        </div>
+                        <div class="program-note-list">
+                            {% for note in program_notes %}
+                                <article class="program-note">
+                                    <strong>{{ note.label }}</strong>
+                                    <p>{{ note.body }}</p>
+                                </article>
+                            {% endfor %}
+                        </div>
+                    </section>
+                {% endif %}
+
+                {% if program.instructors.all %}
+                    <section class="program-section" aria-labelledby="program-instructors-title">
+                        <div class="program-section__header">
+                            <h2 id="program-instructors-title">Кой води школата</h2>
+                        </div>
+                        <div class="people-grid program-people-grid">
+                            {% for instructor in program.instructors.all %}
+                                {% include "partials/person_card.html" with person_name=instructor.full_name person_role=instructor.role_title person_meta=instructor.credentials person_body=instructor.biography person_email=instructor.email person_image=instructor.portrait person_card_class="program-person-card" %}
+                            {% endfor %}
+                        </div>
+                    </section>
+                {% endif %}
+
+                {% if program.schedule_entries.all %}
+                    <section class="program-section" aria-labelledby="program-schedule-title">
+                        <div class="program-section__header">
+                            <h2 id="program-schedule-title">Редовни занимания</h2>
+                        </div>
+                        <div class="table-wrap program-table-wrap">
+                            <table class="info-table program-schedule-table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Ден</th>
+                                        <th scope="col">Час</th>
+                                        <th scope="col">Зала</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for entry in program.schedule_entries.all %}
+                                        <tr>
+                                            <td>{{ entry.day_label }}</td>
+                                            <td>{{ entry.start_time|time:"H:i" }} - {{ entry.end_time|time:"H:i" }}</td>
+                                            <td>{{ entry.room|default:"-" }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                {% endif %}
+
+                {% if upcoming_sessions %}
+                    <section class="program-section" aria-labelledby="program-sessions-title">
+                        <div class="program-section__header">
+                            <h2 id="program-sessions-title">Близки сесии и събития</h2>
+                        </div>
+                        <div class="event-grid program-event-grid">
+                            {% for session in upcoming_sessions %}
+                                <article class="program-event-card">
+                                    <div class="program-event-card__date">
+                                        <span>{{ session.date|date:"d" }}</span>
+                                        <small>{{ session.date|date:"M" }}</small>
+                                    </div>
+                                    <div>
+                                        <h3>{{ session.title }}</h3>
+                                        {% if session.description %}<p>{{ session.description }}</p>{% endif %}
+                                        <p class="program-event-card__meta">
+                                            {{ session.time|time:"H:i" }}
+                                            {% if session.end_time %} - {{ session.end_time|time:"H:i" }}{% endif %}
+                                            {% if session.location_name %} • {{ session.location_name }}{% endif %}
+                                        </p>
+                                    </div>
+                                </article>
+                            {% endfor %}
+                        </div>
+                    </section>
+                {% endif %}
+
+                {% if program.gallery_items.all %}
+                    <section class="program-section" aria-labelledby="program-gallery-title">
+                        <div class="program-section__header">
+                            <h2 id="program-gallery-title">Снимки, свързани със школата</h2>
+                        </div>
+                        <div class="gallery-grid program-gallery-grid">
+                            {% for image in program.gallery_items.all %}
+                                <figure class="gallery-item">
+                                    <a href="{{ image.image.url }}" data-lightbox-link>
+                                        <img src="{{ image.image.url }}" alt="{{ image.caption|default:program.title }}" data-lightbox-image data-lightbox-src="{{ image.image.url }}" data-lightbox-caption="{{ image.caption|default:program.title }}">
+                                    </a>
+                                    {% if image.caption %}<figcaption>{{ image.caption }}</figcaption>{% endif %}
+                                </figure>
+                            {% endfor %}
+                        </div>
+                    </section>
+                {% endif %}
+            </article>
+
+            <aside class="program-detail-sidebar" aria-label="Записване и такси">
+                <div class="program-detail-sidebar__sticky">
+                    <section class="program-action-card" id="enrollment-form">
+                        <span class="program-card-label">Записване</span>
+                        <h2>Телефон за записване</h2>
+                        {% firstof program.inquiry_phone site_settings.phone_primary as enrollment_phone %}
+                        <p class="program-phone-link">{{ enrollment_phone }}</p>
+                    </section>
+
+                    <section class="program-side-panel">
+                        <span class="program-card-label">Такси</span>
+                        <h2>Планове и такси</h2>
+                        <div class="program-price-list">
+                            {% for pricing in program.pricing_options.all %}
+                                <article class="program-price-card{% if pricing.is_featured %} program-price-card--featured{% endif %}">
+                                    <div>
+                                        <strong>{{ pricing.title }}</strong>
+                                        {% if pricing.billing_period %}<small>{{ pricing.billing_period }}</small>{% endif %}
+                                    </div>
+                                    <div class="price-line">{{ pricing.price_label }}</div>
+                                    {% if pricing.description %}<p>{{ pricing.description }}</p>{% endif %}
+                                </article>
+                            {% empty %}
+                                <p class="program-card-muted">Ценови блокове могат да бъдат добавени през администрацията.</p>
+                            {% endfor %}
+                        </div>
+                    </section>
+                </div>
+            </aside>
+        </div>
+    </section>
+
+    {% if related_programs %}
+        <section class="section section--muted program-related">
+            <div class="container">
+                <div class="section-heading">
+                    <h2>Още предложения от същото направление</h2>
+                </div>
+                <div class="card-grid card-grid--compact">
+                    {% for item in related_programs %}
+                        <article class="card">
+                            <h3><a href="{{ item.get_absolute_url }}">{{ item.title }}</a></h3>
+                            <p>{{ item.summary }}</p>
+                        </article>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+    {% endif %}
+
+    <div class="lightbox" hidden data-lightbox>
+        <button class="lightbox__backdrop" type="button" aria-label="Затвори" data-lightbox-close></button>
+        <figure class="lightbox__panel">
+            <button class="dialog-close" type="button" aria-label="Затвори" data-lightbox-close>Закрий</button>
+            <img src="" alt="" data-lightbox-target>
+            <figcaption data-lightbox-caption></figcaption>
+        </figure>
+    </div>
+{% endblock %}

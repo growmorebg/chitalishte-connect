@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}{{ project.title }} | {{ site_settings.site_name }}{% endblock %}
+
+{% block content %}
+    <section class="page-hero page-hero--compact">
+        <div class="container page-hero__grid{% if not project.cover_image %} page-hero__grid--single{% endif %}">
+            <div>
+                <h1>{{ project.title }}</h1>
+                <p class="card-date">{{ project.published_at|date:"d.m.Y" }}</p>
+            </div>
+            {% if project.cover_image %}
+                <div class="project-detail-hero__media">
+                    <img class="hero-media" src="{{ project.cover_image.url }}" alt="{{ project.title }}">
+                </div>
+            {% endif %}
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="container detail-grid detail-grid--single">
+            <article class="detail-content">
+                <div class="rich-text">{{ project.body|linebreaks }}</div>
+
+                {% if project.attachments.all %}
+                    <section class="detail-block">
+                        <h2>Файлове и външни връзки</h2>
+                        <div class="resource-grid">
+                            {% for attachment in project.attachments.all %}
+                                <article class="card resource-card">
+                                    <h3>{{ attachment.title }}</h3>
+                                    {% if attachment.description %}<p>{{ attachment.description }}</p>{% endif %}
+                                    {% if attachment.file %}
+                                        <a class="text-link" href="{{ attachment.file.url }}">Изтеглете файла</a>
+                                    {% else %}
+                                        <a class="text-link" href="{{ attachment.external_url }}" target="_blank" rel="noreferrer">Отворете ресурса</a>
+                                    {% endif %}
+                                </article>
+                            {% endfor %}
+                        </div>
+                    </section>
+                {% endif %}
+            </article>
+        </div>
+    </section>
+{% endblock %}

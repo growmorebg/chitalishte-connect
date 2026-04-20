@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Контакти | {{ site_settings.site_name }}{% endblock %}
+
+{% block content %}
+    <section class="section">
+        <div class="container contact-simple">
+            <h1 class="contact-simple__title">{{ page_intro.title|default:"Контакти" }}</h1>
+            {% if page_intro.intro %}
+                <p class="contact-simple__intro">{{ page_intro.intro }}</p>
+            {% endif %}
+
+            <div class="contact-simple__content">
+                <p>
+                    {% if site_settings.city or site_settings.postal_code %}
+                        {{ site_settings.city }}{% if site_settings.postal_code %} {{ site_settings.postal_code }}{% endif %}<br>
+                    {% endif %}
+                    {{ site_settings.address_line }}
+                </p>
+
+                <ul class="contact-simple__list">
+                    {% if site_settings.phone_secondary %}
+                        <li>Телефон: <a href="tel:{{ site_settings.phone_secondary|cut:' ' }}">{{ site_settings.phone_secondary }}</a></li>
+                    {% endif %}
+                    <li>E-mail: <a href="mailto:{{ site_settings.email }}">{{ site_settings.email }}</a></li>
+                </ul>
+
+                <div class="contact-simple__hours">
+                    <span class="contact-simple__hours-label">Работно време</span>
+                    <strong>{{ site_settings.working_hours_summary }}</strong>
+                </div>
+
+                <p class="contact-simple__label">Карта за разположение:</p>
+                <div class="contact-simple__map">
+                    {% if site_settings.map_embed_url %}
+                        <iframe
+                            src="{{ site_settings.map_embed_url }}"
+                            title="Карта на {{ site_settings.location_name|default:'основната локация' }}"
+                            loading="lazy"
+                            referrerpolicy="no-referrer-when-downgrade"
+                        ></iframe>
+                    {% else %}
+                        <div class="media-placeholder media-placeholder--map">
+                            <strong>Карта</strong>
+                            <span>Няма въведен адрес за вградена карта.</span>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <p class="contact-simple__label"><strong>За да изпратите съобщение, моля попълнете формата:</strong></p>
+            </div>
+
+            <div class="contact-simple__form-wrap">
+                <form class="contact-simple__form" method="post" novalidate>
+                    {% csrf_token %}
+                    {% include "partials/render_form_fields.html" with form=form %}
+                    <div class="contact-simple__actions">
+                        <button class="button" type="submit">Изпрати запитване</button>
+                    </div>
+
+                    <p class="footer-muted">Ще използваме данните ви само за обработка на това запитване. Вижте <a href="{% url 'cms:privacy' %}">поверителност</a> и <a href="{% url 'cms:cookies' %}">бисквитки</a>.</p>
+                </form>
+            </div>
+        </div>
+    </section>
+{% endblock %}
