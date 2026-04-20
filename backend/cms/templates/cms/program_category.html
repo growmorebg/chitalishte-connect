@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}{{ category.name }} | {{ site_settings.site_name }}{% endblock %}
+
+{% block content %}
+    <section class="page-hero">
+        <div class="container page-hero__grid">
+            <div>
+                <h1>{{ category.name }}</h1>
+                <div class="button-row">
+                    <a class="button" href="{% url 'cms:programs' %}">Всички школи</a>
+                    <a class="button button--ghost" href="{% url 'cms:contact' %}">Запитване</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="container detail-grid detail-grid--single">
+            <article class="detail-content">
+                <div class="section-heading">
+                    <h2>Всички записи в категорията</h2>
+                </div>
+                <div class="card-grid">
+                    {% for program in programs %}
+                        {% include "partials/program_card.html" with program=program category_name=category.name show_location=True button_label="Детайли и записване" %}
+                    {% empty %}
+                        <article class="card empty-state">
+                            <h3>Все още няма публикувани школи в тази категория</h3>
+                        </article>
+                    {% endfor %}
+                </div>
+            </article>
+        </div>
+    </section>
+{% endblock %}

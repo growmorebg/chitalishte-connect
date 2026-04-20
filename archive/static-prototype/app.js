@@ -59,6 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const path = window.location.pathname;
   let currentPage = 'home';
   if (path.includes('events')) currentPage = 'events';
+  else if (path.includes('gallery')) currentPage = 'gallery';
   else if (path.includes('contact')) currentPage = 'contact';
 
   // Desktop nav links

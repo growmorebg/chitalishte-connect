@@ -1,0 +1,66 @@
+<footer class="site-footer">
+    <div class="container footer-grid">
+        <div class="footer-column footer-column--brand">
+            <h2>{{ site_settings.site_name|default:"Chitalishte Connect" }}</h2>
+            <div class="footer-contact">
+                <span>{{ site_settings.address_line }}, {{ site_settings.city }}</span>
+                <a href="tel:{{ site_settings.phone_primary|cut:' ' }}">{{ site_settings.phone_primary }}</a>
+                <a href="mailto:{{ site_settings.email }}">{{ site_settings.email }}</a>
+                <span>Работно време: {{ site_settings.working_hours_summary }}</span>
+            </div>
+        </div>
+        <div class="footer-column footer-column--primary-nav">
+            <h3>Основни раздели</h3>
+            <ul class="footer-links">
+                <li><a href="{% url 'cms:home' %}">Начало</a></li>
+                <li><a href="{% url 'cms:programs' %}">Школи</a></li>
+                <li><a href="{% url 'cms:projects' %}">Новини</a></li>
+                <li><a href="{% url 'cms:gallery' %}">Галерия</a></li>
+                <li><a href="{% url 'cms:history' %}">История</a></li>
+                <li><a href="{% url 'cms:board' %}">Настоятелство</a></li>
+                <li><a href="{% url 'cms:page_detail' slug='charter' %}">Устав</a></li>
+                <li><a href="{% url 'cms:contact' %}">Контакти</a></li>
+                {% for page in header_pages %}
+                    <li><a href="{{ page.get_absolute_url }}">{{ page.navigation_title|default:page.title }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="footer-column footer-column--secondary-nav">
+            <h3>Полезно</h3>
+            {% if footer_links %}
+                <div class="footer-links">
+                    {% for link in footer_links %}
+                        <a href="{{ link.url }}"{% if link.open_in_new_tab %} target="_blank" rel="noreferrer"{% endif %}>{{ link.title }}</a>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            <div class="footer-policy-links">
+                <a href="{% url 'cms:privacy' %}">Поверителност</a>
+                <a href="{% url 'cms:cookies' %}">Бисквитки</a>
+                {% for page in footer_pages %}
+                    {% if page.slug != 'charter' and page.slug != 'privacy' and page.slug != 'cookies' %}
+                        <a href="{{ page.get_absolute_url }}">{{ page.navigation_title|default:page.title }}</a>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="container footer-bottom">
+        <small>{{ site_settings.copyright_notice }}</small>
+        <div class="footer-bottom__actions">
+            <a
+                class="footer-social-link"
+                href="{{ facebook_page_url }}"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Facebook"
+                title="Facebook"
+            >
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <path d="M13.5 22v-8h2.7l.4-3.2h-3.1V8.7c0-.9.2-1.6 1.6-1.6h1.7V4.2c-.3 0-1.3-.2-2.5-.2-2.4 0-4.1 1.5-4.1 4.3v2.4H8V14h2.7v8h2.8Z"></path>
+                </svg>
+                <span class="visually-hidden">Facebook</span>
+            </a>
+        </div>
+    </div>
+</footer>

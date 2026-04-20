@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Школи | {{ site_settings.site_name }}{% endblock %}
+
+{% block content %}
+    {% include "partials/page_intro.html" with eyebrow=page_intro.eyebrow heading_title=page_intro.title intro=page_intro.intro %}
+
+    <section class="section">
+        <div class="container">
+            <div class="category-grid">
+                {% for category in categories %}
+                    <a class="card category-card" href="{% url 'cms:programs' %}?category={{ category.slug }}#program-index">
+                        <h3>{{ category.name }}</h3>
+                        <span class="text-link">Отворете категорията</span>
+                    </a>
+                {% empty %}
+                    <article class="card empty-state">
+                        <h2>Няма публикувани категории</h2>
+                    </article>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <section class="section section--muted" id="program-index">
+        <div class="container">
+            <div class="section-heading section-heading--split">
+                <div>
+                    {% if selected_category_obj %}
+                        <h2>{{ selected_category_obj.name }}</h2>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="card-grid">
+                {% for program in programs %}
+                    {% include "partials/program_card.html" with program=program show_age_group=True show_instructors=True show_price_preview=True button_class="button button--small" button_label="Детайли" %}
+                {% empty %}
+                    <article class="card empty-state">
+                        <h2>Няма школи за показване</h2>
+                    </article>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+{% endblock %}

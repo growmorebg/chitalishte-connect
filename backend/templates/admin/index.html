@@ -1,0 +1,23 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block coltype %}colM{% endblock %}
+
+{% block bodyclass %}{{ block.super }} dashboard admin-menu-only{% endblock %}
+
+{% block nav-breadcrumbs %}{% endblock %}
+
+{% block nav-sidebar %}{% endblock %}
+
+{% block content_title %}{% endblock %}
+
+{% block content %}
+<nav class="sticky" id="nav-sidebar" aria-label="{% translate 'Sidebar' %}" aria-expanded="true">
+  <input type="search" id="nav-filter"
+         placeholder="{% translate 'Start typing to filter…' %}"
+         aria-label="{% translate 'Filter navigation items' %}">
+  {% include "admin/app_list.html" with app_list=app_list show_changelinks=False %}
+</nav>
+{% endblock %}
+
+{% block sidebar %}{% endblock %}

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html class="light" lang="bg">
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>Галерия — Chitalishte Connect</title>
+  <meta name="description" content="Снимки от събития, работилници и живота на читалището." />
+
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#0058bc",
+            "primary-container": "#0070eb",
+            "on-primary": "#ffffff",
+            "on-primary-container": "#fefcff",
+            "surface": "#f7f9fc",
+            "surface-container-low": "#f2f4f7",
+            "surface-container-lowest": "#ffffff",
+            "on-surface": "#191c1e",
+            "on-surface-variant": "#414754",
+            "outline-variant": "#c1c6d6",
+          },
+          fontFamily: { headline: ["Inter"], body: ["Inter"], label: ["Inter"] },
+          borderRadius: { DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem", full: "9999px" },
+        },
+      },
+    };
+  </script>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="bg-surface text-on-surface min-h-screen flex flex-col selection:bg-primary-container selection:text-on-primary-container">
+
+  <header class="fixed top-0 w-full z-50 bg-white/85 backdrop-blur-md shadow-sm">
+    <div class="flex justify-between items-center px-6 h-16 max-w-screen-2xl mx-auto">
+      <div class="text-2xl font-black text-[#1877F2] tracking-tighter">
+        <a href="index.html">Chitalishte Connect</a>
+      </div>
+      <nav class="hidden lg:flex items-center gap-2">
+        <a data-nav="home" class="text-slate-600 px-4 py-3 font-sans text-sm font-medium tracking-tight hover:bg-slate-100 rounded-lg transition-colors" href="index.html">Начало</a>
+        <a data-nav="events" class="text-slate-600 px-4 py-3 font-sans text-sm font-medium tracking-tight hover:bg-slate-100 rounded-lg transition-colors" href="events.html">Събития</a>
+        <a data-nav="gallery" class="text-slate-600 px-4 py-3 font-sans text-sm font-medium tracking-tight hover:bg-slate-100 rounded-lg transition-colors" href="gallery.html">Галерия</a>
+        <a data-nav="contact" class="text-slate-600 px-4 py-3 font-sans text-sm font-medium tracking-tight hover:bg-slate-100 rounded-lg transition-colors" href="contact.html">Контакт</a>
+      </nav>
+      <div class="flex items-center gap-3">
+        <button class="material-symbols-outlined text-slate-600 p-2 hover:bg-slate-100 rounded-lg transition-colors">notifications</button>
+        <button class="material-symbols-outlined text-slate-600 p-2 hover:bg-slate-100 rounded-lg transition-colors hidden sm:block">chat</button>
+        <button class="material-symbols-outlined text-slate-600 p-2 hover:bg-slate-100 rounded-lg transition-colors hidden sm:block">account_circle</button>
+        <button class="hamburger-btn" id="hamburger-btn" aria-label="Отваряне и затваряне на менюто">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="mobile-menu" id="mobile-menu">
+    <a data-mobile-nav="home" href="index.html"><span class="material-symbols-outlined">home</span> Начало</a>
+    <a data-mobile-nav="events" href="events.html"><span class="material-symbols-outlined">event</span> Събития</a>
+    <a data-mobile-nav="gallery" href="gallery.html"><span class="material-symbols-outlined">photo_library</span> Галерия</a>
+    <a data-mobile-nav="contact" href="contact.html"><span class="material-symbols-outlined">mail</span> Контакт</a>
+  </div>
+
+  <main class="flex-grow pt-24 pb-14 px-4 sm:px-6">
+    <div class="max-w-6xl mx-auto">
+      <header class="mb-10 text-center sm:text-left">
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-on-surface tracking-tight mb-3">Галерия</h1>
+      </header>
+
+      <!-- Gallery grid (пълни се от gallery.js от Django API) -->
+      <section aria-label="Галерия снимки">
+        <p id="gallery-status" class="text-sm text-on-surface-variant mb-4 hidden" role="status"></p>
+        <div id="gallery-grid" class="gallery-grid"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- Lightbox -->
+  <div id="gallery-lightbox" class="gallery-lightbox" role="dialog" aria-modal="true" aria-label="Увеличен изглед" hidden>
+    <div class="gallery-lightbox-backdrop" data-gallery-close tabindex="-1"></div>
+    <div class="gallery-lightbox-inner">
+      <button type="button" class="gallery-lightbox-close" data-gallery-close aria-label="Затвори">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+      <img id="gallery-lightbox-img" src="" alt="" class="gallery-lightbox-img" />
+      <p id="gallery-lightbox-caption" class="gallery-lightbox-caption"></p>
+    </div>
+  </div>
+
+  <footer class="w-full py-10 sm:py-12 mt-auto bg-slate-50 border-t border-slate-200/20">
+    <div class="flex flex-col md:flex-row justify-between items-center px-6 sm:px-8 gap-6 max-w-7xl mx-auto">
+      <p class="text-sm font-normal text-slate-500 text-center md:text-left">© 2024 Мрежа на българските читалища. Запазване на наследството.</p>
+      <div class="flex flex-wrap justify-center gap-6 sm:gap-8">
+        <a class="text-sm text-slate-500 hover:text-[#1877F2] transition-colors underline-offset-4 hover:underline" href="#">За нас</a>
+        <a class="text-sm text-slate-500 hover:text-[#1877F2] transition-colors underline-offset-4 hover:underline" href="gallery.html">Галерия</a>
+        <a class="text-sm text-slate-500 hover:text-[#1877F2] transition-colors underline-offset-4 hover:underline" href="#">Архив</a>
+        <a class="text-sm text-slate-500 hover:text-[#1877F2] transition-colors underline-offset-4 hover:underline" href="contact.html">Контакт</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- По желание задайте CHITALISHTE_API_BASE ръчно. Ако липсва, gallery.js ще пробва текущия origin и локален Django. -->
+  <script>
+    window.CHITALISHTE_API_BASE = window.CHITALISHTE_API_BASE || "";
+  </script>
+  <script src="app.js"></script>
+  <script src="gallery.js"></script>
+</body>
+</html>
