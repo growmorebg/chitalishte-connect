@@ -71,7 +71,11 @@ class SingletonModel(models.Model):
 
 
 class SiteSettings(SeoFieldsMixin, SingletonModel, TimeStampedModel):
-    site_name = models.CharField("Име на сайта", max_length=160, default="Chitalishte Connect")
+    site_name = models.CharField(
+        "Име на сайта",
+        max_length=160,
+        default='Народно читалище „Св. св. Кирил и Методий – 1926“',
+    )
     site_tagline = models.CharField(
         "Кратък слоган",
         max_length=220,
@@ -90,9 +94,9 @@ class SiteSettings(SeoFieldsMixin, SingletonModel, TimeStampedModel):
     address_line = models.CharField("Адрес", max_length=220, default="кв. Враждебна, ул. „8-ма“ 47")
     city = models.CharField("Град", max_length=120, default="София")
     postal_code = models.CharField("Пощенски код", max_length=20, blank=True, default="1839")
-    phone_primary = models.CharField("Основен телефон", max_length=64, default="+359 88 000 0000")
+    phone_primary = models.CharField("Основен телефон", max_length=64, default="087 782 0388")
     phone_secondary = models.CharField("Допълнителен телефон", max_length=64, blank=True)
-    email = models.EmailField("Имейл", default="hello@example.bg")
+    email = models.EmailField("Имейл", default="chitalishtevrajdebna@gmail.com")
     contact_page_title = models.CharField(
         "Заглавие на контактната страница",
         max_length=160,
@@ -101,10 +105,37 @@ class SiteSettings(SeoFieldsMixin, SingletonModel, TimeStampedModel):
     contact_page_intro = models.TextField(
         "Увод на контактната страница",
         blank=True,
-        default=(
-            "Всички публични контакти са събрани на едно място, заедно с карта, "
-            "работно време и директен вход за въпроси."
-        ),
+        default="",
+    )
+    contact_page_hours_label = models.CharField(
+        "Етикет за работното време",
+        max_length=120,
+        default="Работно време",
+    )
+    contact_page_map_label = models.CharField(
+        "Етикет за картата",
+        max_length=160,
+        default="Карта за разположение:",
+    )
+    contact_page_form_heading = models.CharField(
+        "Заглавие над формата",
+        max_length=220,
+        default="За да изпратите съобщение, моля попълнете формата:",
+    )
+    contact_page_submit_label = models.CharField(
+        "Текст на бутона за формата",
+        max_length=80,
+        default="Изпрати запитване",
+    )
+    contact_page_privacy_note = models.TextField(
+        "Текст под формата",
+        blank=True,
+        default="Ще използваме данните ви само за обработка на това запитване.",
+    )
+    contact_page_success_message = models.CharField(
+        "Съобщение при успешно изпращане",
+        max_length=220,
+        default="Благодарим. Съобщението ви беше изпратено успешно и ще се свържем с вас при възможност.",
     )
     working_hours_summary = models.CharField(
         "Резюме на работното време",

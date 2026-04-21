@@ -189,7 +189,7 @@ class ContactView(TemplateView):
         context["page_intro"] = {
             "eyebrow": default_intro["eyebrow"],
             "title": site_settings.contact_page_title or default_intro["title"],
-            "intro": site_settings.contact_page_intro or default_intro["intro"],
+            "intro": site_settings.contact_page_intro,
         }
         context["form"] = kwargs.get("form") or ContactInquiryForm()
         return context
@@ -197,11 +197,12 @@ class ContactView(TemplateView):
     def post(self, request, *args, **kwargs):
         form = ContactInquiryForm(request.POST)
         if form.is_valid():
+            site_settings = SiteSettings.load()
             submission = form.save()
             send_submission_notification(submission)
             messages.success(
                 request,
-                "Благодарим. Съобщението ви беше изпратено успешно и ще се свържем с вас при възможност.",
+                site_settings.contact_page_success_message,
             )
             return redirect("cms:contact")
         return self.render_to_response(self.get_context_data(form=form))

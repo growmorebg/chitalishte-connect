@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.contrib.admin.utils import flatten_fieldsets
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.core.exceptions import ValidationError
@@ -54,8 +55,34 @@ class AdminCriticalBehaviorTests(TestCase):
             password="password123",
         )
 
-    def test_site_settings_is_not_registered_in_admin(self):
-        self.assertFalse(admin.site.is_registered(SiteSettings))
+    def test_site_settings_is_registered_in_admin_with_footer_contact_fields(self):
+        self.assertTrue(admin.site.is_registered(SiteSettings))
+
+        request = self.factory.get("/admin/core/sitesettings/")
+        request.user = self.admin_user
+        admin_instance = admin.site._registry[SiteSettings]
+        fields = flatten_fieldsets(admin_instance.get_fieldsets(request))
+
+        self.assertIn("address_line", fields)
+        self.assertIn("city", fields)
+        self.assertIn("phone_primary", fields)
+        self.assertIn("email", fields)
+        self.assertIn("working_hours_summary", fields)
+        self.assertIn("contact_page_title", fields)
+        self.assertIn("contact_page_intro", fields)
+        self.assertIn("contact_page_map_label", fields)
+        self.assertIn("contact_page_form_heading", fields)
+        self.assertIn("contact_page_submit_label", fields)
+        self.assertIn("contact_page_privacy_note", fields)
+
+    def test_site_settings_admin_allows_only_one_record(self):
+        request = self.factory.get("/admin/core/sitesettings/")
+        request.user = self.admin_user
+        admin_instance = admin.site._registry[SiteSettings]
+
+        self.assertTrue(admin_instance.has_add_permission(request))
+        SiteSettings.objects.create()
+        self.assertFalse(admin_instance.has_add_permission(request))
 
     def test_footer_link_is_not_registered_in_admin(self):
         self.assertFalse(admin.site.is_registered(FooterLink))
