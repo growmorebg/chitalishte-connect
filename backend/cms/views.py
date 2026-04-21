@@ -1,6 +1,7 @@
 from django.contrib import messages
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect
+from django.urls import reverse
 from django.utils import timezone
 from django.views.decorators.http import require_GET
 from django.views.generic import DetailView, ListView, TemplateView, View
@@ -13,6 +14,7 @@ from programs.models import ProgramSession
 from .cookies import CookiePreferences, set_cookie_preferences
 from .content import PAGE_INTROS
 from .forms import ContactInquiryForm, CookiePreferencesForm
+from .seo import build_public_url
 from .services import (
     get_featured_programs,
     get_featured_stories,
@@ -30,6 +32,17 @@ DEFAULT_PROGRAM_CATEGORY_NAME = "Деца"
 ALL_PROGRAM_CATEGORIES_VALUE = "all"
 
 
+@require_GET
+def robots_txt(request):
+    lines = [
+        "User-agent: *",
+        "Allow: /",
+        f"Sitemap: {build_public_url(request, reverse('cms:sitemap'))}",
+        "",
+    ]
+    return HttpResponse("\n".join(lines), content_type="text/plain")
+
+
 class HomeView(TemplateView):
     template_name = "cms/home.html"
 
@@ -42,9 +55,6 @@ class HomeView(TemplateView):
         context["featured_programs"] = get_featured_programs(limit=6)
         context["featured_stories"] = get_featured_stories(limit=6)
         context["program_categories"] = list(get_program_categories())
-        context["upcoming_events"] = list(
-            ProgramSession.objects.published().filter(date__gte=timezone.localdate())[:3]
-        )
         return context
 
 

@@ -92,6 +92,40 @@ class PublicPagesTests(TestCase):
         self.assertNotContains(response, 'href="index.html"')
         self.assertNotContains(response, 'href="contact.html"')
 
+    @override_settings(PUBLIC_SITE_URL="https://www.kirilimetodii1926.com")
+    def test_homepage_exposes_search_metadata(self):
+        response = self.client.get(reverse("cms:home"))
+        html = response.content.decode()
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(
+            '<meta name="description" content="Официален сайт на Народно читалище „Св. св. Кирил и Методий – 1926“',
+            html,
+        )
+        self.assertIn('<link rel="canonical" href="https://www.kirilimetodii1926.com/">', html)
+        self.assertIn('<p data-nosnippet>', html)
+        self.assertIn('<div class="footer-contact" data-nosnippet>', html)
+        self.assertNotIn("Публичен Django сайт", html)
+
+    @override_settings(PUBLIC_SITE_URL="https://www.kirilimetodii1926.com")
+    def test_robots_txt_allows_crawling_and_points_to_sitemap(self):
+        response = self.client.get(reverse("cms:robots_txt"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response["Content-Type"], "text/plain")
+        self.assertContains(response, "User-agent: *")
+        self.assertContains(response, "Allow: /")
+        self.assertContains(response, "Sitemap: https://www.kirilimetodii1926.com/sitemap.xml")
+
+    def test_sitemap_lists_public_urls(self):
+        response = self.client.get(reverse("cms:sitemap"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "<loc>http://testserver/</loc>")
+        self.assertContains(response, f"<loc>http://testserver{reverse('cms:programs')}</loc>")
+        self.assertContains(response, f"<loc>http://testserver{self.program.get_absolute_url()}</loc>")
+        self.assertContains(response, f"<loc>http://testserver{self.project.get_absolute_url()}</loc>")
+
     def test_footer_renders_facebook_link(self):
         response = self.client.get(reverse("cms:home"))
 

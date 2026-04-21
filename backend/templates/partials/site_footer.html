@@ -2,7 +2,7 @@
     <div class="container footer-grid">
         <div class="footer-column footer-column--brand">
             <h2>{{ site_settings.site_name|default:"Народно читалище „Св. св. Кирил и Методий – 1926“" }}</h2>
-            <div class="footer-contact">
+            <div class="footer-contact" data-nosnippet>
                 <span>{{ site_settings.address_line }}, {{ site_settings.city }}</span>
                 <a href="tel:{{ site_settings.phone_primary|cut:' ' }}">{{ site_settings.phone_primary }}</a>
                 <a href="mailto:{{ site_settings.email }}">{{ site_settings.email }}</a>

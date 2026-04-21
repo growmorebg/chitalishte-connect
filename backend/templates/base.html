@@ -5,7 +5,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}{{ site_settings.site_name|default:"Народно читалище „Св. св. Кирил и Методий – 1926“" }}{% endblock %}</title>
-    <meta name="description" content="{% block meta_description %}Публичен Django сайт за читалищни програми, проекти, контакти и информационни страници.{% endblock %}">
+    <meta name="description" content="{% block meta_description %}{{ site_settings.seo_description|default:"Официален сайт на Народно читалище „Св. св. Кирил и Методий – 1926“ във Враждебна, София: школи, библиотека, новини и контакти." }}{% endblock %}">
+    <link rel="canonical" href="{{ canonical_url }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Literata:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
