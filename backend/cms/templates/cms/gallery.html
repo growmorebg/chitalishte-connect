@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}Галерия | {{ site_settings.site_name }}{% endblock %}
+
+{% block content %}
+    {% include "partials/page_intro.html" with eyebrow="Галерия" heading_title="Публична галерия" intro="Галерийна секция, която показва изображения от Django админа и е готова за по-структурирани публични албуми в следваща фаза." %}
+
+    <section class="section">
+        <div class="container">
+            <div class="gallery-grid">
+                {% for item in gallery_items %}
+                    <figure class="gallery-item">
+                        <img src="{{ item.image.url }}" alt="{{ item.caption|default:'Галерия' }}" data-lightbox-image data-lightbox-src="{{ item.image.url }}" data-lightbox-caption="{{ item.caption|default:'Галерия' }}">
+                        {% if item.caption %}<figcaption>{{ item.caption }}</figcaption>{% endif %}
+                    </figure>
+                {% empty %}
+                    <article class="card empty-state">
+                        <h2>Галерията е празна</h2>
+                        <p>Качете изображения в секцията „Галерия“ на администрацията.</p>
+                    </article>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <div class="lightbox" hidden data-lightbox>
+        <button class="lightbox__backdrop" type="button" aria-label="Затвори" data-lightbox-close></button>
+        <figure class="lightbox__panel">
+            <button class="dialog-close" type="button" aria-label="Затвори" data-lightbox-close>Закрий</button>
+            <img src="" alt="" data-lightbox-target>
+            <figcaption data-lightbox-caption></figcaption>
+        </figure>
+    </div>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends "admin/base.html" %}
+{% load i18n static %}
+
+{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | {{ site_title|default:_("Django site admin") }}{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Literata:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'cms/css/admin.css' %}?v=20260418-admin-refresh">
+{% endblock %}
+
+{% block branding %}
+<div class="cc-admin-brand">
+    <a href="{% url 'admin:index' %}" aria-label="{{ site_header|default:_('Django administration') }}">
+        <span class="cc-admin-brand__mark">
+            <img src="{% static 'cms/images/site-logo.jpg' %}" alt="">
+        </span>
+        <span class="cc-admin-brand__copy">
+            <strong>{{ site_header|default:_("Django administration") }}</strong>
+            <span>Панел за съдържание</span>
+        </span>
+    </a>
+</div>
+{% if user.is_anonymous %}
+    {% include "admin/color_theme_toggle.html" %}
+{% endif %}
+{% endblock %}

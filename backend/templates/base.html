@@ -1,0 +1,86 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="bg" class="no-js">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}{{ site_settings.site_name|default:"Chitalishte Connect" }}{% endblock %}</title>
+    <meta name="description" content="{% block meta_description %}Публичен Django сайт за читалищни програми, проекти, контакти и информационни страници.{% endblock %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Literata:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'cms/css/site.css' %}?v=20260418-library-photos-small">
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    {% include "partials/site_header.html" %}
+    {% include "partials/messages.html" %}
+
+    <main id="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    {% block page_cta %}{% endblock %}
+
+    {% include "partials/site_footer.html" %}
+
+    {% if not hide_cookie_controls %}
+        <section class="cookie-banner" {% if cookie_preferences.has_choice %}hidden{% endif %} data-cookie-banner aria-label="Настройки за бисквитки">
+            <div class="cookie-banner__body">
+                <div>
+                    <h2>{{ site_settings.cookie_banner_title|default:"Настройки за бисквитки" }}</h2>
+                    <p>{{ site_settings.cookie_banner_text }}</p>
+                </div>
+                <div class="cookie-banner__actions">
+                    <a class="button button--ghost" href="{% url 'cms:cookies' %}" data-cookie-open>Настройки</a>
+                    <form method="post" action="{% url 'cms:cookie_preferences' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="redirect_to" value="{{ request.get_full_path }}">
+                        <button class="button button--ghost" type="submit">Само необходими</button>
+                    </form>
+                    <form method="post" action="{% url 'cms:cookie_preferences' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="analytics" value="on">
+                        <input type="hidden" name="redirect_to" value="{{ request.get_full_path }}">
+                        <button class="button" type="submit">Приемам</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <dialog class="cookie-dialog" data-cookie-dialog aria-labelledby="cookie-dialog-title">
+            <div class="cookie-dialog__panel">
+                <div class="cookie-dialog__header">
+                    <h2 id="cookie-dialog-title">Предпочитания за бисквитки</h2>
+                    <button class="dialog-close" type="button" aria-label="Затвори" data-cookie-close>Закрий</button>
+                </div>
+                <div class="cookie-option">
+                    <div>
+                        <strong>Необходими</strong>
+                        <p>Тези настройки поддържат навигацията и запазването на избора ви.</p>
+                    </div>
+                    <input type="checkbox" checked disabled>
+                </div>
+                <form method="post" action="{% url 'cms:cookie_preferences' %}">
+                    {% csrf_token %}
+                    {{ cookie_form.redirect_to }}
+                    <label class="cookie-option" for="{{ cookie_form.analytics.id_for_label }}">
+                        <div>
+                            <strong>Аналитични</strong>
+                            <p>Разрешавайте ги само ако искате да събирате анонимна статистика за използването на сайта.</p>
+                        </div>
+                        {{ cookie_form.analytics }}
+                    </label>
+                    <div class="cookie-dialog__actions">
+                        <a class="button button--ghost" href="{% url 'cms:cookies' %}">Преглед на политиката</a>
+                        <button class="button" type="submit">Запази избора</button>
+                    </div>
+                </form>
+            </div>
+        </dialog>
+    {% endif %}
+
+    <script src="{% static 'cms/js/site.js' %}?v=20260413-hero-full" defer></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

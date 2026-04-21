@@ -1,0 +1,6 @@
+{% if page.callout_title or page.callout_body %}
+    <section class="card">
+        {% if page.callout_title %}<h2>{{ page.callout_title }}</h2>{% endif %}
+        {% if page.callout_body %}<p>{{ page.callout_body }}</p>{% endif %}
+    </section>
+{% endif %}

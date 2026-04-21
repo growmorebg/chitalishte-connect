@@ -1,0 +1,71 @@
+{% load static %}
+{% with url_name=request.resolver_match.url_name current_slug=request.resolver_match.kwargs.slug|default:'' %}
+    <header class="site-header header">
+        <div class="container shell header-shell">
+            <div class="logo-holder">
+                <a href="{% url 'cms:home' %}" class="logo" aria-label="{{ site_settings.site_name|default:'Chitalishte Connect' }}">
+                    <img class="site-logo__image" src="{% static 'cms/images/site-logo.jpg' %}" alt="{{ site_settings.site_name|default:'Chitalishte Connect' }}">
+                </a>
+            </div>
+
+            <div class="header-inner">
+                <div class="header-title clearfix">
+                    <a href="{% url 'cms:home' %}" class="logo-wrapper logo-wrapper-m" aria-label="{{ site_settings.site_name|default:'Chitalishte Connect' }}">
+                        <img class="site-logo__image" src="{% static 'cms/images/site-logo.jpg' %}" alt="{{ site_settings.site_name|default:'Chitalishte Connect' }}">
+                    </a>
+
+                    <div class="text-wrapper">
+                        <h5>{{ site_settings.site_name|default:"Chitalishte Connect" }}</h5>
+                        <p>
+                            {{ site_settings.address_line|default:"кв. Враждебна, ул. „8-ма“ 47" }}{% if site_settings.city %}, {{ site_settings.city }}{% endif %}
+                        </p>
+                    </div>
+                </div>
+
+                <button class="menu-btn nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" data-nav-toggle aria-label="Меню">
+                    <span></span>
+                    <span class="u-hidden-visually">Меню</span>
+                </button>
+
+                <nav class="nav site-nav" id="site-nav" aria-label="Основна навигация" data-nav-panel>
+                    <ul id="menu-header-menu" class="menu">
+                        <li class="menu-item{% if url_name == 'home' %} current-menu-item{% endif %}">
+                            <a href="{% url 'cms:home' %}" {% if url_name == 'home' %}aria-current="page"{% endif %}>Начало</a>
+                        </li>
+                        <li class="menu-item{% if url_name == 'programs' or url_name == 'program_category' or url_name == 'program_detail' %} current-menu-item{% endif %}">
+                            <a href="{% url 'cms:programs' %}" {% if url_name == 'programs' or url_name == 'program_category' or url_name == 'program_detail' %}aria-current="page"{% endif %}>Школи</a>
+                        </li>
+                        <li class="menu-item{% if url_name == 'projects' or url_name == 'project_detail' %} current-menu-item{% endif %}">
+                            <a href="{% url 'cms:projects' %}" {% if url_name == 'projects' or url_name == 'project_detail' %}aria-current="page"{% endif %}>Новини</a>
+                        </li>
+                        <li class="menu-item{% if url_name == 'gallery' %} current-menu-item{% endif %}">
+                            <a href="{% url 'cms:gallery' %}" {% if url_name == 'gallery' %}aria-current="page"{% endif %}>Галерия</a>
+                        </li>
+                        {% for page in header_pages %}
+                            <li class="menu-item{% if request.path == page.get_absolute_url %} current-menu-item{% endif %}">
+                                <a href="{{ page.get_absolute_url }}" {% if request.path == page.get_absolute_url %}aria-current="page"{% endif %}>{{ page.navigation_title|default:page.title }}</a>
+                            </li>
+                        {% endfor %}
+                        <li class="menu-item menu-item-has-children{% if current_slug == 'charter' or url_name == 'history' or url_name == 'board' %} current-menu-ancestor{% endif %}" data-nav-group>
+                            <a href="{% url 'cms:history' %}" aria-haspopup="true" aria-expanded="false" data-nav-trigger>За Нас</a>
+                            <ul class="sub-menu">
+                                <li class="menu-item{% if url_name == 'history' %} current-menu-item{% endif %}">
+                                    <a href="{% url 'cms:history' %}" {% if url_name == 'history' %}aria-current="page"{% endif %}>История</a>
+                                </li>
+                                <li class="menu-item{% if url_name == 'board' %} current-menu-item{% endif %}">
+                                    <a href="{% url 'cms:board' %}" {% if url_name == 'board' %}aria-current="page"{% endif %}>Настоятелство</a>
+                                </li>
+                                <li class="menu-item{% if current_slug == 'charter' %} current-menu-item{% endif %}">
+                                    <a href="{% url 'cms:page_detail' slug='charter' %}" {% if current_slug == 'charter' %}aria-current="page"{% endif %}>Устав</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="menu-item{% if url_name == 'contact' %} current-menu-item{% endif %}">
+                            <a href="{% url 'cms:contact' %}" {% if url_name == 'contact' %}aria-current="page"{% endif %}>Контакти</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+{% endwith %}

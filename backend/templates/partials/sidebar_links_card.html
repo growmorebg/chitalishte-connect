@@ -1,0 +1,10 @@
+<section class="card">
+    <h2>{{ heading }}</h2>
+    <div class="stacked-list">
+        {% for item in links %}
+            {% if item.url != request.path %}
+                <a href="{{ item.url }}">{{ item.label }}</a>
+            {% endif %}
+        {% endfor %}
+    </div>
+</section>
