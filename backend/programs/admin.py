@@ -10,6 +10,7 @@ from .models import (
     Instructor,
     PricingBlock,
     Program,
+    ProgramCategory,
     ProgramGalleryImage,
     ProgramSchedule,
 )
@@ -28,6 +29,32 @@ class ProgramGalleryImageInline(ZeroExtraTabularInline):
     readonly_fields = ("thumbnail",)
     fields = ("thumbnail", "image", "caption", "sort_order")
     thumbnail = build_image_preview("image", width=96, height=64)
+
+
+@admin.register(ProgramCategory)
+class ProgramCategoryAdmin(admin.ModelAdmin):
+    list_display = ("name", "slug", "is_published", "sort_order")
+    list_filter = ("is_published",)
+    search_fields = ("name", "description")
+    prepopulated_fields = {"slug": ("name",)}
+    ordering = ("sort_order", "name")
+    fieldsets = (
+        (
+            "Основно",
+            {
+                "fields": (
+                    "name",
+                    "slug",
+                    "description",
+                )
+            },
+        ),
+        (
+            "Публикация",
+            {"fields": ("is_published", "sort_order")},
+        ),
+        SEO_FIELDSET,
+    )
 
 
 @admin.register(Instructor)

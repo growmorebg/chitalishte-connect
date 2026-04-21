@@ -19,18 +19,21 @@
                 </p>
 
                 <ul class="contact-simple__list">
+                    {% if site_settings.phone_primary %}
+                        <li>Телефон: <a href="tel:{{ site_settings.phone_primary|cut:' ' }}">{{ site_settings.phone_primary }}</a></li>
+                    {% endif %}
                     {% if site_settings.phone_secondary %}
-                        <li>Телефон: <a href="tel:{{ site_settings.phone_secondary|cut:' ' }}">{{ site_settings.phone_secondary }}</a></li>
+                        <li>Допълнителен телефон: <a href="tel:{{ site_settings.phone_secondary|cut:' ' }}">{{ site_settings.phone_secondary }}</a></li>
                     {% endif %}
                     <li>E-mail: <a href="mailto:{{ site_settings.email }}">{{ site_settings.email }}</a></li>
                 </ul>
 
                 <div class="contact-simple__hours">
-                    <span class="contact-simple__hours-label">Работно време</span>
+                    <span class="contact-simple__hours-label">{{ site_settings.contact_page_hours_label|default:"Работно време" }}</span>
                     <strong>{{ site_settings.working_hours_summary }}</strong>
                 </div>
 
-                <p class="contact-simple__label">Карта за разположение:</p>
+                <p class="contact-simple__label">{{ site_settings.contact_page_map_label|default:"Карта за разположение:" }}</p>
                 <div class="contact-simple__map">
                     {% if site_settings.map_embed_url %}
                         <iframe
@@ -47,7 +50,7 @@
                     {% endif %}
                 </div>
 
-                <p class="contact-simple__label"><strong>За да изпратите съобщение, моля попълнете формата:</strong></p>
+                <p class="contact-simple__label"><strong>{{ site_settings.contact_page_form_heading|default:"За да изпратите съобщение, моля попълнете формата:" }}</strong></p>
             </div>
 
             <div class="contact-simple__form-wrap">
@@ -55,10 +58,12 @@
                     {% csrf_token %}
                     {% include "partials/render_form_fields.html" with form=form %}
                     <div class="contact-simple__actions">
-                        <button class="button" type="submit">Изпрати запитване</button>
+                        <button class="button" type="submit">{{ site_settings.contact_page_submit_label|default:"Изпрати запитване" }}</button>
                     </div>
 
-                    <p class="footer-muted">Ще използваме данните ви само за обработка на това запитване. Вижте <a href="{% url 'cms:privacy' %}">поверителност</a> и <a href="{% url 'cms:cookies' %}">бисквитки</a>.</p>
+                    {% if site_settings.contact_page_privacy_note %}
+                        <p class="footer-muted">{{ site_settings.contact_page_privacy_note }} Вижте <a href="{% url 'cms:privacy' %}">поверителност</a> и <a href="{% url 'cms:cookies' %}">бисквитки</a>.</p>
+                    {% endif %}
                 </form>
             </div>
         </div>

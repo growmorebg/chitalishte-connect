@@ -112,7 +112,7 @@ INQUIRY_NOTIFICATION_FROM_EMAIL = os.environ.get(
 )
 INQUIRY_NOTIFICATION_SUBJECT_PREFIX = os.environ.get(
     "DJANGO_INQUIRY_NOTIFICATION_SUBJECT_PREFIX",
-    "[Chitalishte Connect]",
+    "[Народно читалище „Св. св. Кирил и Методий – 1926“]",
 )
 
 COOKIE_CONSENT_COOKIE_NAME = os.environ.get(
