@@ -971,6 +971,121 @@ html[data-theme="dark"] .submit-row {
     font-weight: 800;
 }
 
+.cc-row-action,
+.cc-row-action:link,
+.cc-row-action:visited {
+    display: inline-flex;
+    min-height: 1.9rem;
+    align-items: center;
+    justify-content: center;
+    padding: 0.34rem 0.68rem;
+    border: 1px solid rgba(28, 92, 75, 0.16);
+    border-radius: 999px;
+    background: rgba(28, 92, 75, 0.08);
+    color: var(--cc-accent-strong);
+    font-size: 0.74rem;
+    font-weight: 800;
+    line-height: 1.1;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+button.cc-row-action {
+    min-height: 1.9rem;
+    color: var(--cc-accent-strong);
+    cursor: pointer;
+}
+
+.cc-row-action:hover,
+.cc-row-action:focus {
+    background: rgba(28, 92, 75, 0.16);
+    color: var(--cc-accent-strong);
+    box-shadow: 0 0 0 3px rgba(28, 92, 75, 0.1);
+}
+
+.cc-row-action--publish,
+.cc-row-action--publish:link,
+.cc-row-action--publish:visited {
+    border-color: rgba(28, 92, 75, 0.26);
+    background: rgba(28, 92, 75, 0.14);
+}
+
+.cc-row-action--unpublish,
+.cc-row-action--unpublish:link,
+.cc-row-action--unpublish:visited {
+    border-color: rgba(166, 63, 45, 0.24);
+    background: rgba(166, 63, 45, 0.1);
+    color: #8d2d17;
+}
+
+html[data-theme="dark"] .cc-row-action,
+html[data-theme="dark"] .cc-row-action:link,
+html[data-theme="dark"] .cc-row-action:visited {
+    color: #9ed7c2;
+}
+
+html[data-theme="dark"] .cc-row-action--unpublish,
+html[data-theme="dark"] .cc-row-action--unpublish:link,
+html[data-theme="dark"] .cc-row-action--unpublish:visited {
+    color: #f0a08d;
+}
+
+.dynamic-attachments .delete,
+tr[id^="attachments-"] .delete {
+    width: 3.25rem;
+    text-align: center;
+}
+
+.dynamic-attachments .delete input[type="checkbox"],
+tr[id^="attachments-"] .delete input[type="checkbox"] {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+button.cc-inline-delete-button {
+    display: inline-flex;
+    width: 2.3rem;
+    min-width: 2.3rem;
+    min-height: 2.3rem;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: 1px solid rgba(166, 63, 45, 0.24);
+    border-radius: 999px;
+    background: rgba(166, 63, 45, 0.1);
+    color: #8d2d17;
+    cursor: pointer;
+}
+
+button.cc-inline-delete-button:hover,
+button.cc-inline-delete-button:focus {
+    background: rgba(166, 63, 45, 0.18);
+    color: #8d2d17;
+    box-shadow: 0 0 0 3px rgba(166, 63, 45, 0.12);
+}
+
+button.cc-inline-delete-button svg {
+    width: 1.05rem;
+    height: 1.05rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 2;
+}
+
+html[data-theme="dark"] button.cc-inline-delete-button {
+    color: #f0a08d;
+}
+
+.cc-inline-row-removed {
+    display: none !important;
+}
+
 .paginator {
     padding: 0.9rem 1rem;
     border-top: 1px solid var(--cc-line);

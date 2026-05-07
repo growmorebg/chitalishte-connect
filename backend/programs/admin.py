@@ -1,7 +1,7 @@
 from django.contrib import admin
+from django.utils.text import slugify
 
 from core.admin_utils import (
-    SEO_FIELDSET,
     ZeroExtraTabularInline,
     build_image_preview,
 )
@@ -38,6 +38,21 @@ class ProgramCategoryAdmin(admin.ModelAdmin):
     search_fields = ("name", "description")
     prepopulated_fields = {"slug": ("name",)}
     ordering = ("sort_order", "name")
+    add_fieldsets = (
+        (
+            "Основно",
+            {
+                "fields": (
+                    "name",
+                    "description",
+                )
+            },
+        ),
+        (
+            "Публикация",
+            {"fields": ("is_published", "sort_order")},
+        ),
+    )
     fieldsets = (
         (
             "Основно",
@@ -53,8 +68,34 @@ class ProgramCategoryAdmin(admin.ModelAdmin):
             "Публикация",
             {"fields": ("is_published", "sort_order")},
         ),
-        SEO_FIELDSET,
     )
+
+    def get_fieldsets(self, request, obj=None):
+        if obj is None:
+            return self.add_fieldsets
+        return super().get_fieldsets(request, obj)
+
+    def get_prepopulated_fields(self, request, obj=None):
+        if obj is None:
+            return {}
+        return super().get_prepopulated_fields(request, obj)
+
+    def generate_unique_slug(self, name):
+        base_slug = slugify(name) or "program-category"
+        slug = base_slug
+        index = 2
+
+        while ProgramCategory.objects.filter(slug=slug).exists():
+            slug = f"{base_slug}-{index}"
+            index += 1
+
+        return slug
+
+    def save_model(self, request, obj, form, change):
+        if not change:
+            obj.slug = obj.slug or self.generate_unique_slug(obj.name)
+
+        super().save_model(request, obj, form, change)
 
 
 @admin.register(Instructor)
@@ -120,6 +161,5 @@ class ProgramAdmin(admin.ModelAdmin):
             "Публикация",
             {"fields": ("is_featured", "is_published", "sort_order")},
         ),
-        SEO_FIELDSET,
     )
     cover_preview = build_image_preview("cover_image")

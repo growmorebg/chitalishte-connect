@@ -2,7 +2,7 @@ from django import forms
 from django.contrib import admin
 from django.db import models
 
-from core.admin_utils import SEO_FIELDSET, ZeroExtraTabularInline, build_image_preview, publication_fieldset
+from core.admin_utils import ZeroExtraTabularInline, build_image_preview, publication_fieldset
 
 from .models import BoardMember, GalleryImage, HistoryEntry, HomeFeature, HomeMetric, HomePage, LibraryImage, Page, PageType
 
@@ -92,7 +92,7 @@ class PageAdmin(admin.ModelAdmin):
         "updated_at",
     )
     list_filter = ("page_type", "is_published", "show_in_header", "show_in_footer")
-    search_fields = ("title", "navigation_title", "intro", "body", "seo_title", "seo_description")
+    search_fields = ("title", "navigation_title", "intro", "body")
     prepopulated_fields = {"slug": ("title",)}
     ordering = ("sort_order", "title")
     fieldsets = (
@@ -112,7 +112,6 @@ class PageAdmin(admin.ModelAdmin):
             },
         ),
         publication_fieldset("show_in_header", "show_in_footer"),
-        SEO_FIELDSET,
     )
 
     formfield_overrides = {
@@ -153,7 +152,6 @@ class PageAdmin(admin.ModelAdmin):
                     },
                 ),
                 publication_fieldset("show_in_header", "show_in_footer"),
-                SEO_FIELDSET,
             )
         if obj and obj.slug == "library":
             return (
@@ -181,7 +179,6 @@ class PageAdmin(admin.ModelAdmin):
                     {"fields": ("callout_title", "callout_body")},
                 ),
                 publication_fieldset("show_in_header", "show_in_footer"),
-                SEO_FIELDSET,
             )
         return super().get_fieldsets(request, obj)
 

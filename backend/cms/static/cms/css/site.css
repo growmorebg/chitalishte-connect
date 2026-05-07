@@ -1243,6 +1243,42 @@ dialog {
     gap: 1rem;
 }
 
+.publication-attachment-grid {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.publication-photo {
+    flex: 0 1 clamp(9rem, 22vw, 14rem);
+    margin: 0;
+}
+
+.publication-photo__link {
+    display: block;
+    border-radius: var(--radius-md);
+    cursor: zoom-in;
+}
+
+.publication-photo__link:focus-visible {
+    outline: 3px solid rgba(28, 92, 75, 0.3);
+    outline-offset: 3px;
+}
+
+.publication-photo img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow);
+}
+
+.publication-attachment-grid .resource-card {
+    flex: 1 1 min(100%, 16rem);
+}
+
 .inline-card {
     display: grid;
     grid-template-columns: 1.1fr 0.9fr;
