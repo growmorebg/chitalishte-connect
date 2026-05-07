@@ -18,9 +18,6 @@ class ZeroExtraTabularInline(admin.TabularInline):
     extra = 0
 
 
-SEO_FIELDSET = ("SEO", {"fields": ("seo_title", "seo_description", "seo_image")})
-
-
 def publication_fieldset(*fields):
     return ("Публикация", {"fields": (*fields, "is_published", "sort_order")})
 

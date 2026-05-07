@@ -74,17 +74,6 @@ class SiteSettingsAdmin(admin.ModelAdmin):
                 )
             },
         ),
-        (
-            "SEO",
-            {
-                "classes": ("collapse",),
-                "fields": (
-                    "seo_title",
-                    "seo_description",
-                    "seo_image",
-                ),
-            },
-        ),
     )
 
     def has_add_permission(self, request):

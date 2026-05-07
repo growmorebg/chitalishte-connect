@@ -1,8 +1,22 @@
+from pathlib import Path
+
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.urls import reverse
 
 from core.models import OrderedModel, PublishableModel, SeoFieldsMixin, TimeStampedModel
+
+
+IMAGE_FILE_EXTENSIONS = {
+    ".avif",
+    ".bmp",
+    ".gif",
+    ".jpeg",
+    ".jpg",
+    ".png",
+    ".svg",
+    ".webp",
+}
 
 
 class StoryType(models.TextChoices):
@@ -65,6 +79,12 @@ class StoryAttachment(OrderedModel):
         super().clean()
         if not self.file and not self.external_url:
             raise ValidationError("Добавете файл или външен адрес.")
+
+    @property
+    def is_image(self):
+        if not self.file:
+            return False
+        return Path(self.file.name).suffix.lower() in IMAGE_FILE_EXTENSIONS
 
     def __str__(self):
         return self.title

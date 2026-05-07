@@ -223,6 +223,22 @@ class PublicPagesTests(TestCase):
         self.assertContains(response, self.project.title)
         self.assertContains(response, "Повече информация")
 
+    def test_project_detail_renders_image_attachments_as_photos(self):
+        StoryAttachment.objects.create(
+            story=self.project,
+            title="Снимка",
+            file="project_attachments/photo.jpg",
+        )
+
+        response = self.client.get(self.project.get_absolute_url())
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'class="publication-photo"', html=False)
+        self.assertContains(response, 'class="publication-photo__link"')
+        self.assertContains(response, 'data-lightbox-link')
+        self.assertContains(response, 'data-lightbox-target')
+        self.assertContains(response, 'src="/media/project_attachments/photo.jpg"')
+
     def test_charter_page_renders_as_simple_text_page(self):
         response = self.client.get(self.charter_page.get_absolute_url())
 
