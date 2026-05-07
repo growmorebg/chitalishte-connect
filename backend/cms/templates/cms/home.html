@@ -1,7 +1,8 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}{{ site_settings.site_name }} | Начало{% endblock %}
+{% block title %}{% if home_page.seo_title %}{{ home_page.seo_title }}{% else %}{{ site_settings.site_name }} | Начало{% endif %}{% endblock %}
+{% block meta_description %}{{ home_page.seo_description|default:"Официален сайт на Народно читалище „Св. св. Кирил и Методий – 1926“ във Враждебна, София: школи, библиотека, новини и културни инициативи." }}{% endblock %}
 
 {% block content %}
     <section class="hero hero--image">
@@ -67,26 +68,4 @@
         </div>
     </section>
 
-    {% if upcoming_events %}
-        <section class="section section--muted">
-            <div class="container">
-                <div class="section-heading">
-                    <h2>Предстоящи сесии и срещи</h2>
-                </div>
-                <div class="event-grid">
-                    {% for event in upcoming_events %}
-                        <article class="card event-card">
-                            <p class="event-date">{{ event.date|date:"d M" }}</p>
-                            <h3>{{ event.title }}</h3>
-                            <p class="footer-muted">
-                                {{ event.time|time:"H:i" }}
-                                {% if event.end_time %} - {{ event.end_time|time:"H:i" }}{% endif %}
-                                {% if event.category %} • {{ event.category }}{% endif %}
-                            </p>
-                        </article>
-                    {% endfor %}
-                </div>
-            </div>
-        </section>
-    {% endif %}
 {% endblock %}

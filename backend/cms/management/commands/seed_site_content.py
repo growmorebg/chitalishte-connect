@@ -33,7 +33,7 @@ class Command(BaseCommand):
         if SiteSettings.objects.exists():
             return
         SiteSettings.objects.create(
-            site_name="Chitalishte Connect",
+            site_name='Народно читалище „Св. св. Кирил и Методий – 1926“',
             site_tagline="Културни програми, общностни инициативи и ясно подредена публична информация.",
             footer_summary=(
                 "Сайтът обединява програми, публикации, контакти и правна информация "
@@ -42,13 +42,18 @@ class Command(BaseCommand):
             address_line="кв. Враждебна, ул. „8-ма“ 47",
             city="София",
             postal_code="1839",
-            phone_primary="+359 88 000 0000",
-            phone_secondary="+359 88 000 0001",
-            email="hello@example.bg",
+            phone_primary="087 782 0388",
+            phone_secondary="",
+            email="chitalishtevrajdebna@gmail.com",
             contact_page_title="Контакти",
-            contact_page_intro=(
-                "Всички публични контакти са събрани на едно място, заедно с карта, "
-                "работно време и директен вход за въпроси."
+            contact_page_intro="",
+            contact_page_hours_label="Работно време",
+            contact_page_map_label="Карта за разположение:",
+            contact_page_form_heading="За да изпратите съобщение, моля попълнете формата:",
+            contact_page_submit_label="Изпрати запитване",
+            contact_page_privacy_note="Ще използваме данните ви само за обработка на това запитване.",
+            contact_page_success_message=(
+                "Благодарим. Съобщението ви беше изпратено успешно и ще се свържем с вас при възможност."
             ),
             location_name="Основна база",
             location_short_description="Главна читалищна сграда за административно обслужване, уроци и малки събития.",

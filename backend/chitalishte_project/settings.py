@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.sitemaps",
     "core",
     "pages",
     "programs",
@@ -112,7 +113,7 @@ INQUIRY_NOTIFICATION_FROM_EMAIL = os.environ.get(
 )
 INQUIRY_NOTIFICATION_SUBJECT_PREFIX = os.environ.get(
     "DJANGO_INQUIRY_NOTIFICATION_SUBJECT_PREFIX",
-    "[Chitalishte Connect]",
+    "[Народно читалище „Св. св. Кирил и Методий – 1926“]",
 )
 
 COOKIE_CONSENT_COOKIE_NAME = os.environ.get(
@@ -125,3 +126,5 @@ COOKIE_CONSENT_COOKIE_MAX_AGE = int(
 COOKIE_CONSENT_COOKIE_SECURE = env_bool("DJANGO_COOKIE_CONSENT_COOKIE_SECURE", not DEBUG)
 COOKIE_CONSENT_COOKIE_HTTPONLY = env_bool("DJANGO_COOKIE_CONSENT_COOKIE_HTTPONLY", False)
 COOKIE_CONSENT_COOKIE_SAMESITE = os.environ.get("DJANGO_COOKIE_CONSENT_COOKIE_SAMESITE", "Lax")
+
+PUBLIC_SITE_URL = os.environ.get("DJANGO_PUBLIC_SITE_URL", "").rstrip("/")

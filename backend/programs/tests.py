@@ -74,8 +74,13 @@ class ProgramModelTests(TestCase):
 
 
 class ProgramAdminTests(TestCase):
-    def test_program_category_is_not_registered_in_admin(self):
-        self.assertFalse(admin.site.is_registered(ProgramCategory))
+    def test_program_category_is_registered_in_admin(self):
+        self.assertTrue(admin.site.is_registered(ProgramCategory))
+
+        admin_instance = admin.site._registry[ProgramCategory]
+
+        self.assertEqual(admin_instance.prepopulated_fields, {"slug": ("name",)})
+        self.assertIn("is_published", admin_instance.list_filter)
 
     def test_program_session_is_not_registered_in_admin(self):
         self.assertFalse(admin.site.is_registered(ProgramSession))

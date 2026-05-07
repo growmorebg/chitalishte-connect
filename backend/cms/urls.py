@@ -1,11 +1,15 @@
+from django.contrib.sitemaps.views import sitemap
 from django.urls import path
 from django.views.generic import RedirectView
 
 from . import views
+from .sitemaps import sitemaps
 
 app_name = "cms"
 
 urlpatterns = [
+    path("robots.txt", views.robots_txt, name="robots_txt"),
+    path("sitemap.xml", sitemap, {"sitemaps": sitemaps}, name="sitemap"),
     path("", views.HomeView.as_view(), name="home"),
     path("programs/", views.ProgramListView.as_view(), name="programs"),
     path("programs/categories/<slug:slug>/", views.ProgramCategoryView.as_view(), name="program_category"),

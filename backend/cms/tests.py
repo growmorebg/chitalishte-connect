@@ -92,10 +92,47 @@ class PublicPagesTests(TestCase):
         self.assertNotContains(response, 'href="index.html"')
         self.assertNotContains(response, 'href="contact.html"')
 
+    @override_settings(PUBLIC_SITE_URL="https://www.kirilimetodii1926.com")
+    def test_homepage_exposes_search_metadata(self):
+        response = self.client.get(reverse("cms:home"))
+        html = response.content.decode()
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(
+            '<meta name="description" content="Официален сайт на Народно читалище „Св. св. Кирил и Методий – 1926“',
+            html,
+        )
+        self.assertIn('<link rel="canonical" href="https://www.kirilimetodii1926.com/">', html)
+        self.assertIn('<p data-nosnippet>', html)
+        self.assertIn('<div class="footer-contact" data-nosnippet>', html)
+        self.assertNotIn("Публичен Django сайт", html)
+
+    @override_settings(PUBLIC_SITE_URL="https://www.kirilimetodii1926.com")
+    def test_robots_txt_allows_crawling_and_points_to_sitemap(self):
+        response = self.client.get(reverse("cms:robots_txt"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response["Content-Type"], "text/plain")
+        self.assertContains(response, "User-agent: *")
+        self.assertContains(response, "Allow: /")
+        self.assertContains(response, "Sitemap: https://www.kirilimetodii1926.com/sitemap.xml")
+
+    def test_sitemap_lists_public_urls(self):
+        response = self.client.get(reverse("cms:sitemap"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "<loc>http://testserver/</loc>")
+        self.assertContains(response, f"<loc>http://testserver{reverse('cms:programs')}</loc>")
+        self.assertContains(response, f"<loc>http://testserver{self.program.get_absolute_url()}</loc>")
+        self.assertContains(response, f"<loc>http://testserver{self.project.get_absolute_url()}</loc>")
+
     def test_footer_renders_facebook_link(self):
         response = self.client.get(reverse("cms:home"))
 
         self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "087 782 0388")
+        self.assertContains(response, 'href="tel:0877820388"')
+        self.assertContains(response, "chitalishtevrajdebna@gmail.com")
         self.assertContains(response, FACEBOOK_PAGE_URL)
         self.assertContains(response, 'class="footer-social-link"')
         self.assertContains(response, 'aria-label="Facebook"')
@@ -125,7 +162,7 @@ class PublicPagesTests(TestCase):
                 response = self.client.get(url)
 
                 self.assertEqual(response.status_code, 200)
-                self.assertContains(response, "Chitalishte Connect")
+                self.assertContains(response, "Народно читалище „Св. св. Кирил и Методий – 1926“")
                 self.assertContains(response, marker)
 
     def test_membership_page_returns_not_found(self):
@@ -672,10 +709,33 @@ class FormIntegrationTests(TestCase):
         settings_obj = SiteSettings.load()
         settings_obj.contact_page_title = "Свържете се с нас"
         settings_obj.contact_page_intro = "Редактиран увод от администрацията."
+        settings_obj.contact_page_hours_label = "Приемно време"
+        settings_obj.contact_page_map_label = "Как да ни намерите:"
+        settings_obj.contact_page_form_heading = "Пишете ни чрез формата:"
+        settings_obj.contact_page_submit_label = "Изпрати съобщение"
+        settings_obj.contact_page_privacy_note = "Тестов текст за личните данни."
         settings_obj.location_name = "Основна база"
         settings_obj.address_line = "кв. Враждебна, ул. „8-ма“ 47"
+        settings_obj.phone_primary = "087 782 0388"
+        settings_obj.phone_secondary = "+359 88 111 2222"
+        settings_obj.email = "contact@example.bg"
+        settings_obj.working_hours_summary = "Всеки делничен ден, 10:00 - 17:00"
         settings_obj.save(
-            update_fields=["contact_page_title", "contact_page_intro", "location_name", "address_line"]
+            update_fields=[
+                "contact_page_title",
+                "contact_page_intro",
+                "contact_page_hours_label",
+                "contact_page_map_label",
+                "contact_page_form_heading",
+                "contact_page_submit_label",
+                "contact_page_privacy_note",
+                "location_name",
+                "address_line",
+                "phone_primary",
+                "phone_secondary",
+                "email",
+                "working_hours_summary",
+            ]
         )
 
         response = self.client.get(reverse("cms:contact"))
@@ -684,6 +744,26 @@ class FormIntegrationTests(TestCase):
         self.assertContains(response, "Свържете се с нас")
         self.assertContains(response, "Редактиран увод от администрацията.")
         self.assertContains(response, "кв. Враждебна, ул. „8-ма“ 47")
+        self.assertContains(response, "087 782 0388")
+        self.assertContains(response, 'href="tel:0877820388"')
+        self.assertContains(response, "+359 88 111 2222")
+        self.assertContains(response, "contact@example.bg")
+        self.assertContains(response, "Всеки делничен ден, 10:00 - 17:00")
+        self.assertContains(response, "Приемно време")
+        self.assertContains(response, "Как да ни намерите:")
+        self.assertContains(response, "Пишете ни чрез формата:")
+        self.assertContains(response, "Изпрати съобщение")
+        self.assertContains(response, "Тестов текст за личните данни.")
+
+    def test_contact_page_does_not_fallback_to_placeholder_intro(self):
+        settings_obj = SiteSettings.load()
+        settings_obj.contact_page_intro = ""
+        settings_obj.save(update_fields=["contact_page_intro"])
+
+        response = self.client.get(reverse("cms:contact"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertNotContains(response, "Всички публични контакти са събрани")
 
     def test_contact_form_creates_submission(self):
         response = self.client.post(

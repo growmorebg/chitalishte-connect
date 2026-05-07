@@ -8,6 +8,7 @@ from .services import (
     get_header_pages,
     get_public_section_links,
 )
+from .seo import build_public_url
 
 FACEBOOK_PAGE_URL = "https://www.facebook.com/profile.php?id=61550898774893"
 
@@ -29,6 +30,7 @@ def site_context(request):
         "footer_pages": footer_pages,
         "facebook_page_url": FACEBOOK_PAGE_URL,
         "public_section_links": get_public_section_links(),
+        "canonical_url": build_public_url(request),
         "cookie_preferences": cookie_preferences,
         "cookie_form": CookiePreferencesForm(
             initial={

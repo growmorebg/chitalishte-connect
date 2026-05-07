@@ -228,7 +228,14 @@ Paste this, changing the domain and secret key:
 DJANGO_SECRET_KEY=replace-with-a-long-random-secret
 DJANGO_DEBUG=0
 DJANGO_ALLOWED_HOSTS=your-domain.com,www.your-domain.com,SERVER_IP
+DJANGO_PUBLIC_SITE_URL=https://www.your-domain.com
 DJANGO_COOKIE_CONSENT_COOKIE_SECURE=1
+```
+
+For the current production domain, use:
+
+```bash
+DJANGO_PUBLIC_SITE_URL=https://www.kirilimetodii1926.com
 ```
 
 Generate a strong Django secret key:
