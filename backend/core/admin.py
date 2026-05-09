@@ -1,6 +1,8 @@
 from django.contrib import admin
 from django.contrib.admin.sites import NotRegistered
-from django.contrib.auth.models import Group
+from django.contrib.auth.admin import UserAdmin
+from django.contrib.auth.forms import AdminPasswordChangeForm, UserCreationForm
+from django.contrib.auth.models import Group, User
 
 from .models import SiteSettings
 
@@ -8,22 +10,14 @@ from .models import SiteSettings
 admin.site.site_header = "НЧ „Св. св. Кирил и Методий – 1926“"
 admin.site.site_title = "Администрация"
 admin.site.index_title = "Управление на съдържанието"
+admin.site.disable_action("delete_selected")
 
 
 @admin.register(SiteSettings)
 class SiteSettingsAdmin(admin.ModelAdmin):
+    change_form_template = "admin/core/sitesettings/change_form.html"
     list_display = ("site_name", "phone_primary", "email", "city", "updated_at")
     fieldsets = (
-        (
-            "Идентичност",
-            {
-                "fields": (
-                    "site_name",
-                    "site_tagline",
-                    "footer_summary",
-                )
-            },
-        ),
         (
             "Контакти във футъра и контактната страница",
             {
@@ -38,42 +32,6 @@ class SiteSettingsAdmin(admin.ModelAdmin):
                 )
             },
         ),
-        (
-            "Контактна страница",
-            {
-                "fields": (
-                    "contact_page_title",
-                    "contact_page_intro",
-                    "contact_page_hours_label",
-                    "contact_page_map_label",
-                    "contact_page_form_heading",
-                    "contact_page_submit_label",
-                    "contact_page_privacy_note",
-                    "contact_page_success_message",
-                )
-            },
-        ),
-        (
-            "Карта и достъп",
-            {
-                "fields": (
-                    "location_name",
-                    "location_short_description",
-                    "map_embed_url",
-                    "location_access_notes",
-                )
-            },
-        ),
-        (
-            "Правни текстове и бисквитки",
-            {
-                "fields": (
-                    "copyright_notice",
-                    "cookie_banner_title",
-                    "cookie_banner_text",
-                )
-            },
-        ),
     )
 
     def has_add_permission(self, request):
@@ -84,3 +42,35 @@ try:
     admin.site.unregister(Group)
 except NotRegistered:
     pass
+
+
+try:
+    admin.site.unregister(User)
+except NotRegistered:
+    pass
+
+
+class AdminPasswordResetForm(AdminPasswordChangeForm):
+    def __init__(self, user, *args, **kwargs):
+        super().__init__(user, *args, **kwargs)
+        self.fields.pop("usable_password", None)
+        self.fields["password1"].required = True
+        self.fields["password2"].required = True
+
+
+@admin.register(User)
+class ChitalishteUserAdmin(UserAdmin):
+    list_display = ("username",)
+    list_filter = ()
+    fieldsets = ((None, {"fields": ("username",)}),)
+    add_form = UserCreationForm
+    change_password_form = AdminPasswordResetForm
+    add_fieldsets = (
+        (
+            None,
+            {
+                "classes": ("wide",),
+                "fields": ("username", "password1", "password2"),
+            },
+        ),
+    )

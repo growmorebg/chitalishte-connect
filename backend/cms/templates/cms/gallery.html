@@ -10,7 +10,10 @@
             <div class="gallery-grid">
                 {% for item in gallery_items %}
                     <figure class="gallery-item">
-                        <img src="{{ item.image.url }}" alt="{{ item.caption|default:'Галерия' }}" data-lightbox-image data-lightbox-src="{{ item.image.url }}" data-lightbox-caption="{{ item.caption|default:'Галерия' }}">
+                        <a class="lightbox-opener" href="{{ item.image.url }}" data-lightbox-link aria-label="Отвори снимката">
+                            <img src="{{ item.image.url }}" alt="{{ item.caption|default:'Галерия' }}" data-lightbox-image data-lightbox-src="{{ item.image.url }}" data-lightbox-caption="{{ item.caption|default:'Галерия' }}">
+                            {% include "partials/lightbox_open_icon.html" %}
+                        </a>
                         {% if item.caption %}<figcaption>{{ item.caption }}</figcaption>{% endif %}
                     </figure>
                 {% empty %}
@@ -26,7 +29,9 @@
     <div class="lightbox" hidden data-lightbox>
         <button class="lightbox__backdrop" type="button" aria-label="Затвори" data-lightbox-close></button>
         <figure class="lightbox__panel">
-            <button class="dialog-close" type="button" aria-label="Затвори" data-lightbox-close>Закрий</button>
+            <button class="lightbox__close" type="button" aria-label="Затвори" data-lightbox-close>
+                <span aria-hidden="true">×</span>
+            </button>
             <img src="" alt="" data-lightbox-target>
             <figcaption data-lightbox-caption></figcaption>
         </figure>

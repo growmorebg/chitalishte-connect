@@ -143,7 +143,7 @@ class Page(SeoFieldsMixin, PublishableModel, OrderedModel, TimeStampedModel):
         db_table = "cms_staticpage"
         ordering = ["sort_order", "title"]
         verbose_name = "Страница"
-        verbose_name_plural = "Страници"
+        verbose_name_plural = "За Нас"
 
     def __str__(self):
         return self.title

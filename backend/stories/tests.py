@@ -142,6 +142,12 @@ class StoryAdminPreviewTests(TestCase):
         self.assertContains(response, "cc-row-action--publish")
         self.assertContains(response, f'name="_toggle_publish" value="{self.story.pk}"')
         self.assertContains(response, "Публикувай")
+        self.assertNotContains(response, "column-is_featured")
+        self.assertNotContains(response, "is_featured__exact")
+        self.assertNotContains(response, "По Показвай на началната страница")
+        self.assertNotContains(response, '<div class="actions">', html=False)
+        self.assertNotContains(response, "action-checkbox")
+        self.assertNotContains(response, 'name="_selected_action"', html=False)
 
     def test_admin_changelist_publish_button_publishes_and_unpublishes_story(self):
         self.client.force_login(self.admin_user)
@@ -202,12 +208,15 @@ class StoryAdminPreviewTests(TestCase):
         self.assertNotContains(response, "Кратък адрес")
         self.assertNotContains(response, "Кратко резюме")
         self.assertNotContains(response, "Публикувано")
+        self.assertNotContains(response, "field-sort_order")
+        self.assertNotContains(response, 'name="sort_order"', html=False)
         self.assertNotContains(response, 'name="_continue"')
         self.assertNotContains(response, 'name="_addanother"')
         self.assertContains(response, "Снимки към публикации")
-        self.assertContains(response, "attachments-__prefix__-sort_order")
-        self.assertContains(response, "column-image_preview")
         self.assertContains(response, "attachments-__prefix__-file")
+        self.assertNotContains(response, "attachments-__prefix__-sort_order")
+        self.assertNotContains(response, "column-sort_order")
+        self.assertNotContains(response, "column-image_preview")
         self.assertNotContains(response, "attachments-__prefix__-title")
         self.assertNotContains(response, "attachments-__prefix__-external_url")
         self.assertNotContains(response, "attachments-__prefix__-description")
@@ -307,7 +316,7 @@ class StoryAdminPreviewTests(TestCase):
         self.assertEqual(attachment.title, "program.pdf")
         self.assertTrue(attachment.file)
 
-    def test_admin_change_form_shows_uploaded_image_preview(self):
+    def test_admin_change_form_displays_attachment_file_preview_in_file_field(self):
         StoryAttachment.objects.create(
             story=self.story,
             title="Снимка",
@@ -317,12 +326,33 @@ class StoryAdminPreviewTests(TestCase):
 
         response = self.client.get(reverse("admin:stories_story_change", args=[self.story.pk]))
 
-        self.assertContains(response, "story-attachment-preview")
-        self.assertContains(response, "/media/project_attachments/photo.jpg")
         self.assertContains(response, "cms/js/admin_story_attachments.js")
         self.assertContains(response, 'name="attachments-0-DELETE"', html=False)
+        self.assertNotContains(response, "field-sort_order")
+        self.assertNotContains(response, 'name="sort_order"', html=False)
+        self.assertNotContains(response, "column-sort_order")
+        self.assertNotContains(response, "column-image_preview")
+        self.assertNotContains(response, 'name="attachments-0-sort_order"', html=False)
+        self.assertContains(response, "story-attachment-preview")
+        self.assertContains(response, 'src="/media/project_attachments/photo.jpg"', html=False)
+        self.assertContains(response, 'name="attachments-0-file"', html=False)
         self.assertNotContains(response, "clearable-file-input")
         self.assertNotContains(response, "Изчисти")
+
+    def test_admin_change_form_loads_cover_image_clear_button_helper(self):
+        self.story.cover_image = "projects/cover.jpg"
+        self.story.save(update_fields=["cover_image"])
+        self.client.force_login(self.admin_user)
+
+        response = self.client.get(reverse("admin:stories_story_change", args=[self.story.pk]))
+
+        self.assertContains(response, 'id="cover_image-clear_id"', html=False)
+        self.assertContains(response, "cc-admin-current-file__preview")
+        self.assertContains(response, 'src="/media/projects/cover.jpg"', html=False)
+        self.assertContains(response, 'name="cover_image"', html=False)
+        self.assertNotContains(response, '<p class="file-upload">Сега:', html=False)
+        self.assertNotContains(response, ">projects/cover.jpg</a>", html=False)
+        self.assertContains(response, "cms/js/admin_story_attachments.js")
 
     def test_admin_preview_requires_staff_login(self):
         response = self.client.get(reverse("admin:stories_story_preview", args=[self.story.pk]))

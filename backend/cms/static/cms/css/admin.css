@@ -455,6 +455,43 @@ html[data-theme="dark"] :not(.inline-related) .collapse summary {
     width: 100%;
 }
 
+.inline-group {
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+.inline-group .tabular {
+    min-width: max-content;
+}
+
+.inline-group .tabular .module {
+    min-width: max-content;
+    margin-bottom: 0;
+}
+
+.inline-group .tabular table {
+    width: max-content;
+    min-width: 100%;
+}
+
+.inline-group .tabular th,
+.inline-group .tabular td {
+    white-space: nowrap;
+}
+
+.inline-group .tabular textarea,
+.inline-group .tabular input[type="text"],
+.inline-group .tabular input[type="number"],
+.inline-group .tabular input[type="url"],
+.inline-group .tabular input[type="email"],
+.inline-group .tabular select {
+    max-width: min(18rem, 42vw);
+}
+
+.inline-group .tabular .vTimeField {
+    max-width: 8rem;
+}
+
 td,
 th {
     padding: 0.8rem 1rem;
@@ -1030,14 +1067,94 @@ html[data-theme="dark"] .cc-row-action--unpublish:visited {
     color: #f0a08d;
 }
 
+.cc-story-attachment-file {
+    display: grid;
+    gap: 0.5rem;
+    justify-items: start;
+}
+
+.cc-story-attachment-file__preview {
+    display: block;
+    width: 3.5rem;
+    height: 2.5rem;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.cc-story-attachment-file__name {
+    max-width: 18rem;
+    overflow-wrap: anywhere;
+    color: var(--body-quiet-color);
+    font-size: 0.82rem;
+}
+
+.cc-story-attachment-file__link {
+    overflow-wrap: anywhere;
+}
+
+.cc-admin-current-file {
+    display: grid;
+    gap: 0.45rem;
+    justify-items: start;
+}
+
+.cc-admin-current-file__preview {
+    display: block;
+    width: 3.5rem;
+    height: 2.5rem;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.cc-admin-current-file__change {
+    color: var(--body-quiet-color);
+    font-size: 0.82rem;
+}
+
+.cc-admin-current-file__link {
+    overflow-wrap: anywhere;
+}
+
 .dynamic-attachments .delete,
-tr[id^="attachments-"] .delete {
+tr[id^="attachments-"] .delete,
+.dynamic-schedule_entries .delete,
+tr[id^="schedule_entries-"] .delete,
+.dynamic-pricing_options .delete,
+tr[id^="pricing_options-"] .delete,
+.dynamic-gallery_items .delete,
+tr[id^="gallery_items-"] .delete {
     width: 3.25rem;
     text-align: center;
 }
 
+.cc-page-image-inline .inline-related {
+    position: relative;
+}
+
+.cc-page-image-inline .module.aligned {
+    position: relative;
+}
+
+.cc-page-image-inline__delete {
+    position: absolute;
+    top: 0.85rem;
+    right: 0.85rem;
+    z-index: 1;
+}
+
 .dynamic-attachments .delete input[type="checkbox"],
-tr[id^="attachments-"] .delete input[type="checkbox"] {
+tr[id^="attachments-"] .delete input[type="checkbox"],
+.dynamic-schedule_entries .delete input[type="checkbox"],
+tr[id^="schedule_entries-"] .delete input[type="checkbox"],
+.dynamic-pricing_options .delete input[type="checkbox"],
+tr[id^="pricing_options-"] .delete input[type="checkbox"],
+.dynamic-gallery_items .delete input[type="checkbox"],
+tr[id^="gallery_items-"] .delete input[type="checkbox"],
+.cc-page-image-inline__delete input[type="checkbox"],
+.cc-inline-delete-checkbox,
+.cc-clear-file-label {
     position: absolute;
     width: 1px;
     height: 1px;
@@ -1066,6 +1183,11 @@ button.cc-inline-delete-button:focus {
     background: rgba(166, 63, 45, 0.18);
     color: #8d2d17;
     box-shadow: 0 0 0 3px rgba(166, 63, 45, 0.12);
+}
+
+button.cc-inline-delete-button--selected {
+    background: rgba(166, 63, 45, 0.22);
+    color: #8d2d17;
 }
 
 button.cc-inline-delete-button svg {
