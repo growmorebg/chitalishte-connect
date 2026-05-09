@@ -1,0 +1,78 @@
+{% load i18n admin_urls %}
+<div class="js-inline-admin-formset inline-group cc-page-image-inline"
+     id="{{ inline_admin_formset.formset.prefix }}-group"
+     data-inline-type="stacked"
+     data-inline-formset="{{ inline_admin_formset.inline_formset_data }}">
+<fieldset class="module {{ inline_admin_formset.classes }}" aria-labelledby="{{ inline_admin_formset.formset.prefix }}-heading">
+  {% if inline_admin_formset.is_collapsible %}<details><summary>{% endif %}
+  <h2 id="{{ inline_admin_formset.formset.prefix }}-heading" class="inline-heading">
+  {% if inline_admin_formset.formset.max_num == 1 %}
+    {{ inline_admin_formset.opts.verbose_name|capfirst }}
+  {% else %}
+    {{ inline_admin_formset.opts.verbose_name_plural|capfirst }}
+  {% endif %}
+  </h2>
+  {% if inline_admin_formset.is_collapsible %}</summary>{% endif %}
+{{ inline_admin_formset.formset.management_form }}
+{{ inline_admin_formset.formset.non_form_errors }}
+
+{% for inline_admin_form in inline_admin_formset %}<div class="inline-related{% if inline_admin_form.original or inline_admin_form.show_url %} has_original{% endif %}{% if forloop.last and inline_admin_formset.has_add_permission %} empty-form last-related{% endif %}" id="{{ inline_admin_formset.formset.prefix }}-{% if forloop.last and inline_admin_formset.has_add_permission %}empty{% else %}{{ forloop.counter0 }}{% endif %}">
+  {% if inline_admin_form.show_url %}<a class="inline-view-link" href="{{ inline_admin_form.absolute_url }}">{% translate "View on site" %}</a>{% endif %}
+  {% if inline_admin_form.form.non_field_errors %}{{ inline_admin_form.form.non_field_errors }}{% endif %}
+
+  {% with parent_counter=forloop.counter0 %}
+    {% for fieldset in inline_admin_form %}
+      <fieldset class="module aligned {{ fieldset.classes }}"{% if fieldset.name %} aria-labelledby="{{ fieldset.formset.prefix }}-{{ parent_counter }}-{{ forloop.counter0 }}-heading"{% endif %}>
+        {% if forloop.first and inline_admin_formset.formset.can_delete and inline_admin_formset.has_delete_permission and inline_admin_form.deletion_field %}
+          <div class="cc-page-image-inline__delete">
+            {{ inline_admin_form.deletion_field.field }}
+            <button type="button" class="cc-inline-delete-button" title="Премахни файла" aria-label="Премахни файла"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 6h18"></path><path d="M8 6V4h8v2"></path><path d="M19 6l-1 14H6L5 6"></path><path d="M10 11v5"></path><path d="M14 11v5"></path></svg></button>
+          </div>
+        {% endif %}
+        {% if fieldset.name %}
+          {% if fieldset.is_collapsible %}<details><summary>{% endif %}
+          <h4 id="{{ fieldset.formset.prefix }}-{{ parent_counter }}-{{ forloop.counter0 }}-heading" class="fieldset-heading">{{ fieldset.name }}</h4>
+          {% if fieldset.is_collapsible %}</summary>{% endif %}
+        {% endif %}
+        {% if fieldset.description %}
+          <div class="description">{{ fieldset.description|safe }}</div>
+        {% endif %}
+        {% for line in fieldset %}
+          <div class="form-row{% if line.fields|length == 1 and line.errors %} errors{% endif %}{% if not line.has_visible_field %} hidden{% endif %}{% for field in line %}{% if field.field.name %} field-{{ field.field.name }}{% endif %}{% endfor %}">
+            {% if line.fields|length == 1 %}{{ line.errors }}{% else %}<div class="flex-container form-multiline">{% endif %}
+            {% for field in line %}
+              <div>
+                {% if not line.fields|length == 1 and not field.is_readonly %}{{ field.errors }}{% endif %}
+                <div class="flex-container{% if not line.fields|length == 1 %} fieldBox{% if field.field.name %} field-{{ field.field.name }}{% endif %}{% if not field.is_readonly and field.errors %} errors{% endif %}{% if field.field.is_hidden %} hidden{% endif %}{% endif %}{% if field.is_checkbox %} checkbox-row{% endif %}">
+                  {% if field.is_checkbox %}
+                    {{ field.field }}{{ field.label_tag }}
+                  {% else %}
+                    {{ field.label_tag }}
+                    {% if field.is_readonly %}
+                      <div class="readonly">{{ field.contents }}</div>
+                    {% else %}
+                      {{ field.field }}
+                    {% endif %}
+                  {% endif %}
+                </div>
+                {% if field.field.help_text %}
+                  <div class="help{% if field.field.is_hidden %} hidden{% endif %}"{% if field.field.id_for_label %} id="{{ field.field.id_for_label }}_helptext"{% endif %}>
+                    <div>{{ field.field.help_text|safe }}</div>
+                  </div>
+                {% endif %}
+              </div>
+            {% endfor %}
+            {% if not line.fields|length == 1 %}</div>{% endif %}
+          </div>
+        {% endfor %}
+        {% if fieldset.name and fieldset.is_collapsible %}</details>{% endif %}
+      </fieldset>
+    {% endfor %}
+  {% endwith %}
+
+  {% if inline_admin_form.needs_explicit_pk_field %}{{ inline_admin_form.pk_field.field }}{% endif %}
+  {% if inline_admin_form.fk_field %}{{ inline_admin_form.fk_field.field }}{% endif %}
+</div>{% endfor %}
+  {% if inline_admin_formset.is_collapsible %}</details>{% endif %}
+</fieldset>
+</div>

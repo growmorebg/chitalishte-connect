@@ -15,57 +15,148 @@ from core.admin_utils import ZeroExtraTabularInline, build_image_preview
 from .models import Story, StoryAttachment
 
 
+IMAGE_FILE_EXTENSIONS = {".avif", ".gif", ".jpeg", ".jpg", ".png", ".webp"}
+
+
+class StoryAttachmentFileInput(forms.FileInput):
+    def render(self, name, value, attrs=None, renderer=None):
+        input_html = super().render(name, value, attrs, renderer)
+        try:
+            file_url = value.url
+        except (AttributeError, ValueError):
+            file_url = None
+        file_name = getattr(value, "name", "") or ""
+        display_name = Path(file_name).name
+
+        if not file_url or not display_name:
+            return input_html
+
+        if Path(display_name).suffix.lower() in IMAGE_FILE_EXTENSIONS:
+            return format_html(
+                '<div class="cc-story-attachment-file">'
+                '<a class="cc-story-attachment-file__preview-link" href="{}" target="_blank" rel="noopener">'
+                '<img class="story-attachment-preview cc-story-attachment-file__preview" src="{}" alt="{}">'
+                "</a>"
+                '<div class="cc-story-attachment-file__name">{}</div>'
+                "{}"
+                "</div>",
+                file_url,
+                file_url,
+                display_name,
+                display_name,
+                input_html,
+            )
+
+        return format_html(
+            '<div class="cc-story-attachment-file">'
+            '<a class="cc-story-attachment-file__link" href="{}" target="_blank" rel="noopener">{}</a>'
+            "{}"
+            "</div>",
+            file_url,
+            display_name,
+            input_html,
+        )
+
+
+class StoryCoverImageInput(forms.ClearableFileInput):
+    def render(self, name, value, attrs=None, renderer=None):
+        input_html = forms.FileInput.render(self, name, None, attrs, renderer)
+        try:
+            file_url = value.url
+        except (AttributeError, ValueError):
+            file_url = None
+        file_name = getattr(value, "name", "") or ""
+        display_name = Path(file_name).name
+
+        if not self.is_initial(value) or not file_url or not display_name:
+            return input_html
+
+        clear_html = ""
+        if not self.is_required:
+            checkbox_name = self.clear_checkbox_name(name)
+            checkbox_id = self.clear_checkbox_id(checkbox_name)
+            clear_html = format_html(
+                '<span class="clearable-file-input">'
+                '<input type="checkbox" name="{}" id="{}">'
+                '<label for="{}">{}</label>'
+                "</span>",
+                checkbox_name,
+                checkbox_id,
+                checkbox_id,
+                self.clear_checkbox_label,
+            )
+
+        if Path(display_name).suffix.lower() in IMAGE_FILE_EXTENSIONS:
+            current_html = format_html(
+                '<a class="cc-admin-current-file__preview-link" href="{}" target="_blank" rel="noopener">'
+                '<img class="cc-admin-current-file__preview" src="{}" alt="">'
+                "</a>",
+                file_url,
+                file_url,
+            )
+        else:
+            current_html = format_html(
+                '<a class="cc-admin-current-file__link" href="{}" target="_blank" rel="noopener">{}</a>',
+                file_url,
+                display_name,
+            )
+
+        return format_html(
+            '<div class="cc-admin-current-file">'
+            "{}"
+            "{}"
+            '<div class="cc-admin-current-file__change">{}:</div>'
+            "{}"
+            "</div>",
+            current_html,
+            clear_html,
+            self.input_text,
+            input_html,
+        )
+
+
+class StoryAdminForm(forms.ModelForm):
+    class Meta:
+        model = Story
+        fields = "__all__"
+        widgets = {
+            "cover_image": StoryCoverImageInput,
+        }
+
+
 class StoryAttachmentInlineForm(forms.ModelForm):
     class Meta:
         model = StoryAttachment
         fields = "__all__"
         widgets = {
-            "file": forms.FileInput(attrs={"class": "cc-story-attachment-file-input"}),
+            "file": StoryAttachmentFileInput(attrs={"class": "cc-story-attachment-file-input"}),
         }
 
 
 class StoryAttachmentInline(ZeroExtraTabularInline):
     model = StoryAttachment
     form = StoryAttachmentInlineForm
-    fields = ("sort_order", "image_preview", "file")
-    readonly_fields = ("image_preview",)
+    fields = ("file",)
     verbose_name = "Снимка към публикация"
     verbose_name_plural = "Снимки към публикации"
 
     class Media:
         js = ("cms/js/admin_story_attachments.js",)
 
-    @admin.display(description="Снимка")
-    def image_preview(self, obj):
-        if not obj or not obj.is_image:
-            return "—"
-
-        try:
-            image_url = obj.file.url
-        except (AttributeError, ValueError):
-            return "—"
-
-        return format_html(
-            '<img class="story-attachment-preview" src="{}" '
-            'style="width:120px;height:80px;object-fit:cover;border-radius:8px;" alt="">',
-            image_url,
-        )
-
-
 @admin.register(Story)
 class StoryAdmin(admin.ModelAdmin):
+    form = StoryAdminForm
     change_form_template = "admin/stories/story/change_form.html"
     list_display = (
         "cover_preview",
         "title",
         "story_type",
         "published_at",
-        "is_featured",
         "is_published",
         "preview_link",
         "updated_at",
     )
-    list_filter = ("story_type", "is_published", "is_featured", "published_at")
+    list_filter = ("story_type", "is_published", "published_at")
     search_fields = ("title", "excerpt", "body")
     prepopulated_fields = {"slug": ("title",)}
     date_hierarchy = "published_at"
@@ -87,7 +178,7 @@ class StoryAdmin(admin.ModelAdmin):
         ),
         (
             "Публикация",
-            {"fields": ("is_featured", "sort_order")},
+            {"fields": ("is_featured",)},
         ),
     )
     add_fieldsets = editor_fieldsets
@@ -124,7 +215,6 @@ class StoryAdmin(admin.ModelAdmin):
             "title",
             "story_type",
             "published_at",
-            "is_featured",
             "is_published",
             self.build_publish_toggle(request),
             "preview_link",

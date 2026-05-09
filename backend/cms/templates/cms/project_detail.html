@@ -29,7 +29,7 @@
                             {% for attachment in project.attachments.all %}
                                 {% if attachment.is_image %}
                                     <figure class="publication-photo">
-                                        <a class="publication-photo__link" href="{{ attachment.file.url }}" data-lightbox-link>
+                                        <a class="publication-photo__link" href="{{ attachment.file.url }}" data-lightbox-link aria-label="Отвори снимката">
                                             <img
                                                 src="{{ attachment.file.url }}"
                                                 alt="{{ project.title }}"
@@ -37,6 +37,7 @@
                                                 data-lightbox-src="{{ attachment.file.url }}"
                                                 data-lightbox-caption="{{ project.title }}"
                                             >
+                                            {% include "partials/lightbox_open_icon.html" %}
                                         </a>
                                     </figure>
                                 {% else %}
@@ -61,7 +62,9 @@
     <div class="lightbox" hidden data-lightbox>
         <button class="lightbox__backdrop" type="button" aria-label="Затвори" data-lightbox-close></button>
         <figure class="lightbox__panel">
-            <button class="dialog-close" type="button" aria-label="Затвори" data-lightbox-close>Закрий</button>
+            <button class="lightbox__close" type="button" aria-label="Затвори" data-lightbox-close>
+                <span aria-hidden="true">×</span>
+            </button>
             <img src="" alt="" data-lightbox-target>
             <figcaption data-lightbox-caption></figcaption>
         </figure>

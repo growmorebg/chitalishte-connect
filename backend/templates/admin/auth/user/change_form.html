@@ -1,12 +1,11 @@
 {% extends "admin/change_form.html" %}
 {% load admin_urls %}
 
-{% block object-tools %}{% endblock %}
-
 {% block submit_buttons_bottom %}
     <div class="submit-row">
         <input type="submit" value="Запис" class="default" name="_save">
-        {% if not add and not is_popup and has_delete_permission and original %}
+        <a class="button" href="../password/">Възстановяване на парола</a>
+        {% if not is_popup and has_delete_permission and change and original %}
             {% url opts|admin_urlname:'delete' original.pk|admin_urlquote as delete_url %}
             <a href="{% add_preserved_filters delete_url %}" class="deletelink">Изтрий</a>
         {% endif %}

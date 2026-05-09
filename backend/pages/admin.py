@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib import admin
 from django.db import models
+from django.utils.text import slugify
 
 from core.admin_utils import ZeroExtraTabularInline, build_image_preview, publication_fieldset
 
@@ -58,25 +59,39 @@ class HistoryEntryAdminForm(forms.ModelForm):
         self.fields["title"].help_text = "По желание. Показва се под снимката."
 
 
+class BoardMemberAdminForm(forms.ModelForm):
+    class Meta:
+        model = BoardMember
+        fields = "__all__"
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["short_bio"].label = "Биография"
+
+
 class HistoryEntryInline(admin.StackedInline):
     form = HistoryEntryAdminForm
     model = HistoryEntry
+    template = "admin/pages/page/edit_inline/image_stacked.html"
     extra = 0
-    fields = ("image", "preview", "title", "is_published", "sort_order")
-    readonly_fields = ("preview",)
+    fields = ("image", "title")
     verbose_name = "Снимка към историята"
     verbose_name_plural = "Снимки към историята"
-    preview = build_image_preview("image")
+
+    class Media:
+        js = ("cms/js/admin_story_attachments.js",)
 
 
 class LibraryImageInline(admin.StackedInline):
     model = LibraryImage
+    template = "admin/pages/page/edit_inline/image_stacked.html"
     extra = 0
-    fields = ("image", "preview", "caption", "is_published", "sort_order")
-    readonly_fields = ("preview",)
+    fields = ("image", "caption")
     verbose_name = "Снимка към библиотеката"
     verbose_name_plural = "Снимки към библиотеката"
-    preview = build_image_preview("image")
+
+    class Media:
+        js = ("cms/js/admin_story_attachments.js",)
 
 
 @admin.register(Page)
@@ -84,27 +99,17 @@ class PageAdmin(admin.ModelAdmin):
     form = PageAdminForm
     list_display = (
         "title",
-        "page_type",
-        "slug",
-        "is_published",
-        "show_in_header",
-        "show_in_footer",
         "updated_at",
     )
-    list_filter = ("page_type", "is_published", "show_in_header", "show_in_footer")
+    list_filter = ()
     search_fields = ("title", "navigation_title", "intro", "body")
-    prepopulated_fields = {"slug": ("title",)}
+    prepopulated_fields = {}
     ordering = ("sort_order", "title")
     fieldsets = (
         (
             "Основно",
             {
                 "fields": (
-                    "page_type",
-                    "title",
-                    "navigation_title",
-                    "slug",
-                    "intro",
                     "body",
                     "callout_title",
                     "callout_body",
@@ -117,6 +122,13 @@ class PageAdmin(admin.ModelAdmin):
     formfield_overrides = {
         models.TextField: {"widget": forms.Textarea(attrs={"rows": 8})},
     }
+
+    def get_queryset(self, request):
+        queryset = super().get_queryset(request)
+        resolver_match = getattr(request, "resolver_match", None)
+        if resolver_match and resolver_match.url_name == "pages_page_changelist":
+            return queryset.exclude(slug__in=("board", "privacy", "cookies"))
+        return queryset
 
     def has_add_permission(self, request):
         return False
@@ -141,35 +153,12 @@ class PageAdmin(admin.ModelAdmin):
                             "Страницата поддържа прост HTML в полето за съдържание. "
                             "Снимките се добавят от секцията под формата."
                         ),
-                        "fields": (
-                            "page_type",
-                            "title",
-                            "navigation_title",
-                            "slug",
-                            "intro",
-                            "body",
-                        ),
+                        "fields": ("body",),
                     },
                 ),
-                publication_fieldset("show_in_header", "show_in_footer"),
             )
         if obj and obj.slug == "library":
             return (
-                (
-                    "Основно",
-                    {
-                        "description": (
-                            "Страницата има отделни публични секции за описание, работно време и снимки."
-                        ),
-                        "fields": (
-                            "page_type",
-                            "title",
-                            "navigation_title",
-                            "slug",
-                            "intro",
-                        ),
-                    },
-                ),
                 (
                     "Описание",
                     {"fields": ("body",)},
@@ -178,28 +167,41 @@ class PageAdmin(admin.ModelAdmin):
                     "Работно време",
                     {"fields": ("callout_title", "callout_body")},
                 ),
-                publication_fieldset("show_in_header", "show_in_footer"),
+            )
+        if obj and (obj.page_type == PageType.CHARTER or obj.slug == "charter"):
+            return (
+                (
+                    "Основно",
+                    {"fields": ("body",)},
+                ),
             )
         return super().get_fieldsets(request, obj)
+
+    def changeform_view(self, request, object_id=None, form_url="", extra_context=None):
+        extra_context = {
+            **(extra_context or {}),
+            "show_save_and_continue": False,
+            "show_save_and_add_another": False,
+        }
+        return super().changeform_view(request, object_id, form_url, extra_context)
 
 
 @admin.register(BoardMember)
 class BoardMemberAdmin(admin.ModelAdmin):
-    list_display = ("portrait_preview", "full_name", "role", "phone", "is_published", "sort_order", "updated_at")
-    list_filter = ("is_published",)
+    form = BoardMemberAdminForm
+    change_form_template = "admin/pages/boardmember/change_form.html"
+    list_display = ("portrait_preview", "full_name", "role", "phone", "updated_at")
+    list_filter = ()
     search_fields = ("full_name", "role", "short_bio", "biography", "email", "phone")
-    prepopulated_fields = {"slug": ("full_name",)}
-    ordering = ("sort_order", "full_name")
-    readonly_fields = ("portrait_preview",)
+    prepopulated_fields = {}
+    ordering = ("full_name",)
     fieldsets = (
         (
             "Основно",
             {
                 "fields": (
-                    "portrait_preview",
                     "portrait",
                     "full_name",
-                    "slug",
                     "role",
                     "phone",
                     "email",
@@ -208,15 +210,37 @@ class BoardMemberAdmin(admin.ModelAdmin):
         ),
         (
             "Съдържание",
-            {"fields": ("short_bio", "biography")},
+            {"fields": ("short_bio",)},
         ),
-        publication_fieldset(),
     )
     portrait_preview = build_image_preview("portrait", description="Портрет", width=72, height=72)
+
+    def _generate_unique_slug(self, obj):
+        max_length = BoardMember._meta.get_field("slug").max_length
+        base_slug = slugify(obj.full_name, allow_unicode=True) or "board-member"
+        base_slug = base_slug[:max_length]
+        slug = base_slug
+        suffix = 2
+        queryset = BoardMember.objects.exclude(pk=obj.pk)
+
+        while queryset.filter(slug=slug).exists():
+            suffix_text = f"-{suffix}"
+            slug = f"{base_slug[: max_length - len(suffix_text)]}{suffix_text}"
+            suffix += 1
+
+        return slug
+
+    def save_model(self, request, obj, form, change):
+        if not obj.slug:
+            obj.slug = self._generate_unique_slug(obj)
+        if not change:
+            obj.is_published = True
+        super().save_model(request, obj, form, change)
 
 
 @admin.register(GalleryImage)
 class GalleryImageAdmin(admin.ModelAdmin):
+    change_form_template = "admin/pages/galleryimage/change_form.html"
     list_display = ("thumbnail", "caption", "alt_text", "is_published", "sort_order", "created_at")
     list_filter = ("is_published",)
     search_fields = ("caption", "alt_text")
@@ -225,7 +249,7 @@ class GalleryImageAdmin(admin.ModelAdmin):
     fieldsets = (
         (
             "Изображение",
-            {"fields": ("thumbnail", "image", "caption", "alt_text")},
+            {"fields": ("thumbnail", "image", "caption")},
         ),
         publication_fieldset(),
     )

@@ -63,17 +63,43 @@ class AdminCriticalBehaviorTests(TestCase):
         admin_instance = admin.site._registry[SiteSettings]
         fields = flatten_fieldsets(admin_instance.get_fieldsets(request))
 
-        self.assertIn("address_line", fields)
-        self.assertIn("city", fields)
-        self.assertIn("phone_primary", fields)
-        self.assertIn("email", fields)
-        self.assertIn("working_hours_summary", fields)
-        self.assertIn("contact_page_title", fields)
-        self.assertIn("contact_page_intro", fields)
-        self.assertIn("contact_page_map_label", fields)
-        self.assertIn("contact_page_form_heading", fields)
-        self.assertIn("contact_page_submit_label", fields)
-        self.assertIn("contact_page_privacy_note", fields)
+        self.assertEqual(
+            fields,
+            [
+                "address_line",
+                "city",
+                "postal_code",
+                "phone_primary",
+                "phone_secondary",
+                "email",
+                "working_hours_summary",
+            ],
+        )
+
+        SiteSettings.objects.create()
+        self.client.force_login(self.admin_user)
+        response = self.client.get("/admin/core/sitesettings/1/change/")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Контакти във футъра и контактната страница")
+        self.assertContains(response, "field-address_line")
+        self.assertContains(response, "field-city")
+        self.assertContains(response, "field-postal_code")
+        self.assertContains(response, "field-phone_primary")
+        self.assertContains(response, "field-phone_secondary")
+        self.assertContains(response, "field-email")
+        self.assertContains(response, "field-working_hours_summary")
+        self.assertNotContains(response, "Идентичност")
+        self.assertNotContains(response, "Контактна страница")
+        self.assertNotContains(response, "Карта и достъп")
+        self.assertNotContains(response, "Правни текстове и бисквитки")
+        self.assertNotContains(response, "field-site_name")
+        self.assertNotContains(response, "field-contact_page_title")
+        self.assertNotContains(response, "field-location_name")
+        self.assertContains(response, 'value="Запис" class="default" name="_save"', html=False)
+        self.assertNotContains(response, 'name="_continue"', html=False)
+        self.assertNotContains(response, 'name="_addanother"', html=False)
+        self.assertNotContains(response, 'class="deletelink"', html=False)
 
     def test_site_settings_admin_allows_only_one_record(self):
         request = self.factory.get("/admin/core/sitesettings/")
@@ -114,8 +140,133 @@ class AdminCriticalBehaviorTests(TestCase):
 
         self.assertFalse(admin_instance.has_add_permission(request))
 
+    def test_inquiry_changelist_hides_program_column(self):
+        InquirySubmission.objects.create(
+            inquiry_type=InquiryType.GENERAL,
+            full_name="Тест Потребител",
+            email="user@example.bg",
+            subject="Тестово запитване",
+            message="Искам повече информация.",
+        )
+        self.client.force_login(self.admin_user)
+
+        response = self.client.get("/admin/inquiries/inquirysubmission/")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertNotContains(response, "column-program")
+        self.assertNotContains(response, ">Школа<", html=False)
+        self.assertNotContains(response, '<div class="actions">', html=False)
+        self.assertNotContains(response, "action-checkbox")
+        self.assertNotContains(response, 'name="_selected_action"', html=False)
+
+    def test_inquiry_change_form_hides_program_and_continue_action(self):
+        submission = InquirySubmission.objects.create(
+            inquiry_type=InquiryType.GENERAL,
+            full_name="Тест Потребител",
+            email="user@example.bg",
+            subject="Тестово запитване",
+            message="Искам повече информация.",
+        )
+        self.client.force_login(self.admin_user)
+
+        response = self.client.get(f"/admin/inquiries/inquirysubmission/{submission.pk}/change/")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertNotContains(response, 'name="_continue"', html=False)
+        self.assertNotContains(response, "field-program")
+        self.assertNotContains(response, "Школа:")
+
     def test_auth_group_is_not_registered_in_admin(self):
         self.assertFalse(admin.site.is_registered(Group))
+
+    def test_user_add_form_keeps_password_login_enabled(self):
+        self.client.force_login(self.admin_user)
+
+        response = self.client.get("/admin/auth/user/add/")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertNotContains(response, "After you")
+        self.assertNotContains(response, "usable_password")
+        self.assertContains(response, 'value="Запис" class="default" name="_save"', html=False)
+        self.assertNotContains(response, 'name="_continue"', html=False)
+        self.assertNotContains(response, 'name="_addanother"', html=False)
+
+        add_response = self.client.post(
+            "/admin/auth/user/add/",
+            {
+                "username": "editor",
+                "password1": "strong-password-123",
+                "password2": "strong-password-123",
+                "_save": "Запис",
+            },
+        )
+
+        self.assertEqual(add_response.status_code, 302)
+        self.assertTrue(get_user_model().objects.get(username="editor").has_usable_password())
+
+    def test_user_change_form_only_edits_username_and_expected_actions(self):
+        editor = get_user_model().objects.create_user(
+            username="editor",
+            email="editor@example.bg",
+            password="strong-password-123",
+        )
+        self.client.force_login(self.admin_user)
+
+        response = self.client.get(f"/admin/auth/user/{editor.pk}/change/")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'name="username"', html=False)
+        self.assertNotContains(response, 'id="id_password"', html=False)
+        self.assertNotContains(response, "Лична информация")
+        self.assertNotContains(response, "Права")
+        self.assertNotContains(response, "Важни дати")
+        self.assertNotContains(response, 'name="first_name"', html=False)
+        self.assertNotContains(response, 'name="last_name"', html=False)
+        self.assertNotContains(response, 'name="email"', html=False)
+        self.assertNotContains(response, 'name="is_active"', html=False)
+        self.assertNotContains(response, 'name="is_staff"', html=False)
+        self.assertNotContains(response, 'name="is_superuser"', html=False)
+        self.assertNotContains(response, 'name="groups"', html=False)
+        self.assertNotContains(response, 'name="user_permissions"', html=False)
+        self.assertNotContains(response, 'name="last_login_0"', html=False)
+        self.assertNotContains(response, 'name="date_joined_0"', html=False)
+        self.assertContains(response, 'value="Запис" class="default" name="_save"', html=False)
+        self.assertContains(response, 'href="../password/">Възстановяване на парола</a>', html=False)
+        self.assertContains(response, 'class="deletelink">Изтрий</a>', html=False)
+        self.assertNotContains(response, 'name="_continue"', html=False)
+        self.assertNotContains(response, 'name="_addanother"', html=False)
+
+    def test_user_password_form_removes_password_login_toggle(self):
+        editor = get_user_model().objects.create_user(
+            username="editor",
+            email="editor@example.bg",
+            password="strong-password-123",
+        )
+        self.client.force_login(self.admin_user)
+
+        response = self.client.get(f"/admin/auth/user/{editor.pk}/password/")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'name="password1"', html=False)
+        self.assertContains(response, 'name="password2"', html=False)
+        self.assertNotContains(response, "usable_password")
+        self.assertNotContains(response, "Влизане чрез парола")
+        self.assertNotContains(response, "Изключено")
+        self.assertNotContains(response, "Disable password-based authentication")
+
+        post_response = self.client.post(
+            f"/admin/auth/user/{editor.pk}/password/",
+            {
+                "password1": "strong-password-456",
+                "password2": "strong-password-456",
+                "set-password": "Change password",
+            },
+        )
+
+        self.assertEqual(post_response.status_code, 302)
+        editor.refresh_from_db()
+        self.assertTrue(editor.check_password("strong-password-456"))
+        self.assertTrue(editor.has_usable_password())
 
     def test_admin_app_list_omits_app_caption_links(self):
         request = self.factory.get("/admin/programs/program/")
